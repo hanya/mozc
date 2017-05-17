@@ -56,7 +56,7 @@ def IsMac():
 
 def IsLinux():
   """Returns true if the platform is Linux."""
-  return os.name == 'posix' and os.uname()[0] == 'Linux'
+  return os.name == 'posix' and os.uname()[0] in ('Linux', 'Haiku')
 
 
 def GetNumberOfProcessors():
