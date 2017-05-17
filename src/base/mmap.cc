@@ -256,7 +256,7 @@ bool Mmap::SyncToFile() {
 #endif  // MOZC_USE_PEPPER_FILE_IO
 
 // Define a macro (MOZC_HAVE_MLOCK) to indicate mlock support.
-#if defined(OS_WIN) || defined(OS_ANDROID) || defined(OS_NACL)
+#if defined(OS_WIN) || defined(OS_ANDROID) || defined(OS_NACL) || defined(OS_HAIKU)
 # define MOZC_HAVE_MLOCK 0
 #else  // defined(OS_WIN) || defined(OS_ANDROID) ||
        // defined(OS_NACL)
