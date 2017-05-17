@@ -112,7 +112,9 @@ TEST_F(IPCPathManagerTest, IPCPathManagerTest) {
 #ifdef OS_LINUX
   // On Linux, |path| should be abstract (see man unix(7) for details.)
   ASSERT_FALSE(path.empty());
+#ifndef OS_HAIKU
   EXPECT_EQ('\0', path[0]);
+#endif
 #endif
 }
 
