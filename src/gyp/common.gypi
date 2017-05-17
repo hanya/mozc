@@ -79,13 +79,13 @@
       '-funsigned-char',
       '-include base/namespace.h',
       '-pipe',
-      '-pthread',
+      #'-pthread',
     ],
     # linux_cflags will be used in Linux except for NaCl.
     'linux_cflags': [
       '<@(gcc_cflags)',
       '-fno-omit-frame-pointer',
-      '-fstack-protector',
+      #'-fstack-protector',
       '--param=ssp-buffer-size=4',
     ],
     # nacl_cflags will be used for NaCl.
@@ -105,7 +105,7 @@
     ],
     # Libraries for GNU/Linux environment.
     'linux_ldflags': [
-      '-pthread',
+      #'-pthread',
     ],
 
     'conditions': [
@@ -128,9 +128,9 @@
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
       ['target_platform=="Linux"', {
-        'compiler_target': 'clang',
+        'compiler_target': 'gcc',
         'compiler_target_version_int': 304,  # Clang 3.4 or higher
-        'compiler_host': 'clang',
+        'compiler_host': 'gcc',
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
     ],
@@ -272,6 +272,17 @@
           ['target_platform=="Linux"', {
             # OS_LINUX is defined always (target and host).
             'defines': ['OS_LINUX',],
+			'conditions': [
+				['variant=="Haiku"', {
+					'defines': ['OS_LINUX', 'OS_HAIKU', '__STRICT_ANSI__'],
+					'link_settings': {
+						'libraries': [
+							'-lroot', 
+							'-lnetwork',
+						],
+					},
+				}]
+			],
           }],
           ['target_platform=="Android"', {
             'defines': ['NO_USAGE_REWRITER'],
@@ -445,9 +456,9 @@
     ['target_platform=="Linux"', {
       'make_global_settings': [
         ['AR', '<!(which ar)'],
-        ['CC', '<!(which clang)'],
-        ['CXX', '<!(which clang++)'],
-        ['LD', '<!(which ld)'],
+        ['CC', '<!(which gcc)'],
+        ['CXX', '<!(which g++)'],
+        ['LD', '<!(which g++)'],
         ['NM', '<!(which nm)'],
         ['READELF', '<!(which readelf)'],
       ],
