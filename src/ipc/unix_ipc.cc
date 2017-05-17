@@ -128,6 +128,7 @@ bool IsPeerValid(int socket, pid_t *pid) {
   // system call.
   // TODO(yusukes): Add implementation for ARM Linux.
 #ifndef __arm__
+#ifndef OS_HAIKU // not works on haiku os?
   struct ucred peer_cred;
   int peer_cred_len = sizeof(peer_cred);
   if (getsockopt(socket, SOL_SOCKET, SO_PEERCRED,
@@ -143,6 +144,7 @@ bool IsPeerValid(int socket, pid_t *pid) {
   }
 
   *pid = peer_cred.pid;
+#endif // OS_HAIKU
 #endif  // __arm__
 
   return true;
@@ -368,10 +370,10 @@ IPCServer::IPCServer(const string &name,
     return;
   }
   DCHECK(!server_address_.empty());
-
+#ifndef OS_HAIKU // file location is not required for Haiku OS?
   const string dirname = FileUtil::Dirname(server_address_);
   mkdir_p(dirname);
-
+#endif
   sockaddr_un addr;
   ::memset(&addr, 0, sizeof(addr));
   socket_ = ::socket(PF_UNIX, SOCK_STREAM, 0);
