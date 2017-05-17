@@ -141,7 +141,7 @@ void Thread::Start(const string &thread_name) {
       state_->is_running_ = false;
       state_->handle_.reset();
   } else {
-#if defined(OS_NACL)
+#if defined(OS_NACL) || defined(OS_HAIKU)
     // NaCl doesn't support setname.
 #elif defined(OS_MACOSX)
     pthread_setname_np(thread_name.c_str());
