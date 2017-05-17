@@ -173,6 +173,8 @@ def GetGypFileNames(options):
     if not PkgExists('ibus-1.0 >= 1.4.1'):
       logging.info('removing ibus.gyp.')
       gyp_file_names.remove('%s/unix/ibus/ibus.gyp' % SRC_DIR)
+    if options.variant == 'Haiku':
+	  gyp_file_names.extend(glob.glob('%s/haiku/*/*.gyp' % SRC_DIR))
   elif options.target_platform == 'NaCl':
     # Add chrome NaCl Mozc gyp scripts.
     gyp_file_names.append('%s/chrome/nacl/nacl_extension.gyp' % SRC_DIR)
@@ -254,7 +256,9 @@ def AddTargetPlatformOption(parser):
                           'which build should be done. '
                           'If you want Android build, specify "Android". '
                           'If you want NaCl build, specify "NaCl".'))
-
+  parser.add_option('--variant', dest='variant',
+                    default='',
+                    help='Specify variant of the target.')
 
 def GetDefaultWixPath():
   """Returns the default Wix directory.."""
@@ -699,6 +703,7 @@ def GypMain(options, unused_args):
 
   target_platform_value = target_platform
   gyp_options.extend(['-D', 'target_platform=%s' % target_platform_value])
+  gyp_options.extend(['-D', 'variant=%s' % options.variant])
 
   if IsWindows():
     gyp_options.extend(['-G', 'msvs_version=2015'])
