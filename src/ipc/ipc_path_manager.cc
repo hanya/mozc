@@ -43,6 +43,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#ifdef OS_HAIKU
+// For team info
+#include <OS.h>
+#endif
 #ifdef OS_MACOSX
 #include <sys/sysctl.h>
 #endif  // OS_MACOSX
@@ -274,13 +278,19 @@ bool IPCPathManager::GetPathName(string *ipc_name) const {
   ipc_name->assign(MacUtil::GetLabelForSuffix(""));
 #else  // not OS_WIN nor OS_MACOSX
   // GetUserIPCName("<name>") => "/tmp/.mozc.<key>.<name>"
+#ifdef OS_HAIKU
+  const char kIPCPrefix[] = "/boot/home/config/settings/mozc/.mozc.";
+#else
   const char kIPCPrefix[] = "/tmp/.mozc.";
+#endif // OS_HAIKU
   *ipc_name = kIPCPrefix;
 #endif  // OS_WIN
 
 #ifdef OS_LINUX
+#ifndef OS_HAIKU
   // On Linux, use abstract namespace which is independent of the file system.
   (*ipc_name)[0] = '\0';
+#endif // OS_HAIKU
 #endif
 
   ipc_name->append(ipc_path_info_->key());
@@ -389,6 +399,20 @@ bool IPCPathManager::IsValidServer(uint32 pid,
 #endif  // OS_MACOSX
 
 #ifdef OS_LINUX
+#ifdef OS_HAIKU
+  team_info info;
+  status_t status = get_team_info(pid, &info);
+  if (status != B_OK) {
+    LOG(ERROR) << "get_team_info() failed: " << status;
+	return false;
+  }
+  
+  char *p = info.args;
+  if ((p = strchr(p, ' '))) {
+    *p = '\0'; // ignore arguments
+  }
+  server_path_ = info.args;
+#else
   // load from /proc/<pid>/exe
   char proc[128];
   char filename[512];
@@ -401,6 +425,7 @@ bool IPCPathManager::IsValidServer(uint32 pid,
   filename[size] = '\0';
 
   server_path_ = filename;
+#endif // OS_HAIKU
   server_pid_ = pid;
 #endif  // OS_LINUX
 
@@ -410,6 +435,8 @@ bool IPCPathManager::IsValidServer(uint32 pid,
   }
 
 #ifdef OS_LINUX
+#ifdef OS_HAIKU
+#else
   if ((server_path + " (deleted)") == server_path_) {
     LOG(WARNING) << server_path << " on disk is modified";
     // If a user updates the server binary on disk during the server is running,
@@ -418,6 +445,7 @@ bool IPCPathManager::IsValidServer(uint32 pid,
     server_path_ = server_path;
     return true;
   }
+#endif // OS_HAIKU
 #endif  // OS_LINUX
 
   return false;
