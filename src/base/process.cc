@@ -47,7 +47,11 @@
 #if defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_NACL)
 #include <fcntl.h>
 #include <signal.h>
+#if !defined(OS_HAIKU)
 #include <spawn.h>  // for posix_spawn().
+#else
+#include <kernel/image.h>
+#endif // OS_HAIKU
 #include <sys/types.h>
 #endif  // OS_LINUX || OS_ANDROID || OS_NACL
 
@@ -97,10 +101,15 @@ bool Process::OpenBrowser(const string &url) {
 #endif
 
 #if defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_NACL)
+#ifdef OS_HAIKU
+  // Is there any way to do on Haiku OS?
+  return SpawnProcess("WebPositive", url);
+#else
   static const char kBrowserCommand[] = "/usr/bin/xdg-open";
   // xdg-open which uses kfmclient or gnome-open internally works both on KDE
   // and GNOME environments.
   return SpawnProcess(kBrowserCommand, url);
+#endif // OS_HAIKU
 #endif  // OS_LINUX || OS_ANDROID || OS_NACL
 
 #ifdef OS_MACOSX
@@ -204,6 +213,7 @@ bool Process::SpawnProcess(const string &path,
   const int kOverwrite = 0;  // Do not overwrite.
   ::setenv("MALLOC_CHECK_", "2", kOverwrite);
 #endif  // OS_LINUX || OS_ANDROID || OS_NACL
+#if !defined(OS_HAIKU)
   pid_t tmp_pid = 0;
 
   // Spawn new process.
@@ -224,6 +234,36 @@ bool Process::SpawnProcess(const string &path,
     *pid = tmp_pid;
   }
   return result == 0;
+#else
+  thread_id tmp_tid = 0;
+  
+  tmp_tid = load_image(arg_tmp.size() +1, argv.get(), 
+       const_cast<const char**>(environ));
+  if (tmp_tid != B_ERROR) {
+    VLOG(1) << "image_load: thread id is " << tmp_tid;
+  } else {
+	LOG(ERROR) << "image_load failed: error"; // todo what error?
+  }
+  
+  status_t tmp_st = B_BAD_THREAD_ID;
+  
+  if (tmp_tid != B_ERROR) {
+    tmp_st = resume_thread(tmp_tid);
+    if (tmp_st == B_OK) {
+      VLOG(1) << "resume_thread: thread is resumed";
+    } else if (tmp_st == B_BAD_THREAD_ID) {
+      LOG(ERROR) << "resume_thread failed: bad thread id";
+    } else if (tmp_st == B_BAD_THREAD_STATE) {
+      LOG(ERROR) << "resume_thread failed: bad thread state";
+    }
+    if (pid != NULL) {
+	  *pid = tmp_tid;
+    }
+  }
+  // start resumed thread
+  
+  return tmp_tid != B_ERROR && tmp_st == B_OK;
+#endif // OS_HAIKU
 #endif  // OS_WIN
 }
 
@@ -265,17 +305,30 @@ bool Process::WaitProcess(size_t pid, int timeout) {
 
   return true;
 #else
+#if !defined(OS_HAIKU)
   pid_t processe_id = static_cast<pid_t>(pid);
+#else
+  thread_id tid = static_cast<thread_id>(pid);
+#endif
   const int kPollingDuration = 250;
   int left_time = timeout < 0 ? 1 : timeout;
   while (left_time > 0) {
     Util::Sleep(kPollingDuration);
+#if !defined(OS_HAIKU)
     if (::kill(processe_id, 0) != 0) {
       if (errno == EPERM) {
         return false;   // access defined
       }
       return true;   // process not found
-    }
+	}
+#else
+	// todo, with this way, suspended thread would be resumed
+	status_t status = resume_thread(tid);
+	if (status == B_BAD_THREAD_ID) {
+	  return true; // thread not found, finished or something
+	}
+	// B_OK or B_BAD_THREAD_STATE means the thread is still alive
+#endif
     if (timeout > 0) {
       left_time -= kPollingDuration;
     }
@@ -312,6 +365,7 @@ bool Process::IsProcessAlive(size_t pid, bool default_result) {
   return default_result;  // unknown
 
 #else  // OS_WIN
+#if !defined(OS_HAIKU)
   const int kSig = 0;
   if (::kill(static_cast<pid_t>(pid), kSig) == -1) {
     if (errno == EPERM || errno == EINVAL) {
@@ -322,6 +376,10 @@ bool Process::IsProcessAlive(size_t pid, bool default_result) {
   }
 
   return true;
+#else
+  status_t status = resume_thread(static_cast<thread_id>(pid));
+  return status != B_BAD_THREAD_ID;
+#endif // OS_HAIKU
 #endif  // OS_WIN
 }
 
