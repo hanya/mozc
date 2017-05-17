@@ -80,8 +80,15 @@ typedef unsigned int       char32;
 typedef unsigned __int64   uint64;
 typedef __int64             int64;
 #else
+#if !defined(OS_HAIKU) // these types are defined in os/supports/SupportDefs.
 typedef unsigned long long uint64;
 typedef long long           int64;
+#else
+#ifndef __haiku_uint64
+typedef __haiku_uint64			uint64;
+typedef	__haiku_int64		  	 int64;
+#endif // OS_HAIKU
+#endif
 #endif  // OS_WIN
 
 #include <stdint.h>
