@@ -62,7 +62,7 @@
     # load Mozc's modules. See
     # - https://github.com/google/mozc/issues/14
     # for the background information.
-    'use_libprotobuf%': '0',
+    'use_libprotobuf%': '1',
 
     # Set '1' to use system-instaleld zinnia library.  Otherwise
     # zinnia will be built from source as needed.
