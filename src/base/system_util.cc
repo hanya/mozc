@@ -39,6 +39,10 @@
 #include <pwd.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#ifdef OS_HAIKU
+#include <FindDirectory.h>
+#include <fs_info.h>
+#endif
 #ifdef OS_MACOSX
 #include <sys/stat.h>
 #include <sys/sysctl.h>
@@ -237,6 +241,7 @@ UserProfileDirectoryImpl::UserProfileDirectoryImpl() {
   // is injected from Java layer.
 
 #else  // !OS_WIN && !OS_MACOSX && !OS_ANDROID
+#ifndef OS_HAIKU
   char buf[1024];
   struct passwd pw, *ppw;
   const uid_t uid = geteuid();
@@ -245,6 +250,14 @@ UserProfileDirectoryImpl::UserProfileDirectoryImpl() {
   CHECK_LT(0, strlen(pw.pw_dir))
       << "Home directory for uid " << uid << " is not set.";
   dir = FileUtil::JoinPath(pw.pw_dir, ".mozc");
+#else // OS_HAIKU
+  dev_t volume = dev_for_path("/boot");
+  char buffer[B_PATH_NAME_LENGTH + B_FILE_NAME_LENGTH];
+  if (find_directory(B_USER_SETTINGS_DIRECTORY, volume, false, 
+                     buffer, sizeof(buffer)) == B_OK) {
+    dir = FileUtil::JoinPath((const char*)buffer, "mozc");
+  }
+#endif
 #endif  // !OS_WIN && !OS_MACOSX && !OS_ANDROID
 
   FileUtil::CreateDirectory(dir);
@@ -809,7 +822,11 @@ string SystemUtil::GetOSVersionString() {
   // TODO(toshiyuki): get more specific info
   return ret;
 #elif defined(OS_LINUX) || defined(OS_NACL)
+#ifndef OS_HAIKU
   const string ret = "Linux";
+#else // OS_HAIKU
+  const string ret = "Haiku";
+#endif // OS_HAIKU
   return ret;
 #else  // !OS_WIN && !OS_MACOSX && !OS_LINUX
   const string ret = "Unknown";
