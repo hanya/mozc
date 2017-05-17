@@ -269,6 +269,11 @@ RunLevel::RunLevelType RunLevel::GetRunLevel(RunLevel::RequestType type) {
 
 #else  // OS_WIN
   if (type == SERVER || type == RENDERER) {
+#ifdef OS_HAIKU
+    // ::geteuid function can return zero on Haiku OS for normal user, since 
+	// there is no user rights on the system?
+	return RunLevel::NORMAL;
+#endif
     if (::geteuid() == 0) {
       // This process is started by root, or the executable is setuid to root.
 
