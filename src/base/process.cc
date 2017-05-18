@@ -103,7 +103,7 @@ bool Process::OpenBrowser(const string &url) {
 #if defined(OS_LINUX) || defined(OS_ANDROID) || defined(OS_NACL)
 #ifdef OS_HAIKU
   // Is there any way to do on Haiku OS?
-  return SpawnProcess("WebPositive", url);
+  return SpawnProcess("/boot/system/apps/WebPositive", url);
 #else
   static const char kBrowserCommand[] = "/usr/bin/xdg-open";
   // xdg-open which uses kfmclient or gnome-open internally works both on KDE
