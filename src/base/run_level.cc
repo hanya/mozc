@@ -292,14 +292,14 @@ RunLevel::RunLevelType RunLevel::GetRunLevel(RunLevel::RequestType type) {
     }
     return RunLevel::NORMAL;
   }
-
+#ifndef OS_HAIKU
   // type is 'CLIENT'
   if (::geteuid() == 0 || ::getuid() == 0) {
     // When mozc.so is loaded into a privileged process, deny clients to use
     // dictionary_tool and config_dialog.
     return RunLevel::DENY;
   }
-
+#endif
   return RunLevel::NORMAL;
 
 #endif  // OS_WIN
