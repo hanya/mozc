@@ -60,6 +60,7 @@ void CharacterPaletteTableWidget::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void CharacterPaletteTableWidget::mouseMoveEvent(QMouseEvent *event) {
+#ifndef OS_HAIKU
   QTableWidgetItem *item = itemAt(event->pos());
   if (item == NULL) {
     return;
@@ -73,6 +74,7 @@ void CharacterPaletteTableWidget::mouseMoveEvent(QMouseEvent *event) {
                        this);
     setLookupResultItem(NULL);
   }
+#endif
 }
 }  // namespace gui
 }  // namespace mozc
