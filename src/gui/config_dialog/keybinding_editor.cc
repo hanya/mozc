@@ -38,8 +38,20 @@
 #include <imm.h>
 #include <ime.h>
 #elif OS_LINUX
+#ifndef OS_HAIKU
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
+#else // OS_HAIKU
+#include <InterfaceDefs.h>
+#define XK_Hiragana_Katakana B_HANKAKU_ZENKAKU
+// Special keys defined by custom keymap.
+enum {
+	// 0x6c
+	K_MUHENKAN = 0xf4,
+	// 0x6d
+	K_HENKAN = 0xf5,
+};
+#endif // OS_HAIKU
 #endif
 
 #include <QtCore/QString>
@@ -135,6 +147,7 @@ struct LinuxVirtualKeyEntry {
 };
 
 const LinuxVirtualKeyEntry kLinuxVirtualKeyModifierNonRequiredTable[] = {
+#ifndef OS_HAIKU
   { XK_Muhenkan, "Muhenkan" },
   { XK_Henkan, "Henkan" },
   { XK_Hiragana, "Hiragana" },
@@ -144,6 +157,12 @@ const LinuxVirtualKeyEntry kLinuxVirtualKeyModifierNonRequiredTable[] = {
   { XK_Hiragana_Katakana, "Hiragana" },
   { XK_Eisu_toggle, "Eisu" },
   { XK_Zenkaku_Hankaku, "Hankaku/Zenkaku" },
+#else
+  { K_MUHENKAN, "Muhenkan" },
+  { K_HENKAN, "Henkan" },
+  { B_KATAKANA_HIRAGANA, "Hiragana" },
+  { B_HANKAKU_ZENKAKU, "Hankaku/Zenkaku" },
+#endif
 };
 #endif
 
