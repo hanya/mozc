@@ -1,0 +1,2 @@
+resource app_signature "application/x-vnd.Mozc-InputMethod";
+resource app_name_catalog_entry "Mozc-InputMethod:System name:mozc";
