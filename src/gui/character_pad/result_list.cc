@@ -77,6 +77,7 @@ void ResultList::mouseReleaseEvent(QMouseEvent *event) {
 }
 
 void ResultList::mouseMoveEvent(QMouseEvent *event) {
+#ifndef OS_HAIKU
   QListWidgetItem *item = itemAt(event->pos());
   if (item == NULL) {
     return;
@@ -86,6 +87,7 @@ void ResultList::mouseMoveEvent(QMouseEvent *event) {
   QToolTip::showText(event->globalPos(),
                      UnicodeUtil::GetToolTip(font(), item->text()),
                      this);
+#endif
 }
 
 void ResultList::updateFont(const QFont &font) {
