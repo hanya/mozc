@@ -78,6 +78,7 @@
       'dependencies': [
         'mozc_no_resource',
         'input_method_rsrc',
+        'catalogs',
       ],
       'actions': [
         {
