@@ -32,6 +32,7 @@
     'relative_dir': 'haiku/zinnia_model',
     'gen_out_dir': '<(SHARED_INTERMEDIATE_DIR)/<(relative_dir)',
     'out_dir': '<(PRODUCT_DIR)',
+    'zinnia_tomoe_dir%': '../../../../zinnia-tomoe-0.6.0-20080911',
   },
   'targets': [
     {
@@ -54,7 +55,7 @@
         {
           'action_name': 'make_zinnia_model',
           'inputs': [
-            '../../../../zinnia-tomoe-0.6.0-20080911/handwriting-ja.model.txt',
+            '<(zinnia_tomoe_dir)/handwriting-ja.model.txt',
           ],
           'outputs': [
             '<(out_dir)/handwriting-ja.model',
