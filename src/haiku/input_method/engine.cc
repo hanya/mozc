@@ -260,6 +260,7 @@ bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod,
     }
     if ('!' <= byte && byte <= '~') {
         // Ascii characters
+        *mod = *mod & (~B_SHIFT_KEY);
         key_event->set_key_code(byte);
         return true;
     }
