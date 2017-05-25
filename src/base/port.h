@@ -84,11 +84,13 @@ typedef __int64             int64;
 typedef unsigned long long uint64;
 typedef long long           int64;
 #else
-#ifndef __haiku_uint64
+#ifndef uint64
 typedef __haiku_uint64			uint64;
-typedef	__haiku_int64		  	 int64;
-#endif // OS_HAIKU
 #endif
+#ifndef int64
+typedef	__haiku_int64		  	 int64;
+#endif
+#endif // OS_HAIKU
 #endif  // OS_WIN
 
 #include <stdint.h>
