@@ -520,7 +520,7 @@ void MozcBar::MessageReceived(BMessage *msg)
                                     } else {
                                         view->Hide();
                                     }
-                                    if (!swch) {
+                                    if (swch) {
                                         BMessage mess(IM_BAR_TOOLS_ICON_STATE);
                                         mess.AddBool("hidden", view->IsHidden());
                                         fLooper->PostMessage(&mess);
