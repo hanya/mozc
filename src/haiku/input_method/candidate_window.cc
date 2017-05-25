@@ -468,9 +468,11 @@ void CandidateView::_CalculateSize()
             // allow " 100/900 "
             totalWidth = std::max(totalWidth, fShortcutCharWidth * 8);
         }
+        totalHeight = ceilf(totalHeight);
+        totalWidth = ceilf(totalWidth);
         BSize size = Window()->Size();
-        if (size.height != roundf(totalHeight) || 
-            size.width != roundf(totalWidth)) {
+        if (size.height != totalHeight || 
+            size.width != totalWidth) {
             Window()->ResizeTo(totalWidth, totalHeight);
         }
     }
@@ -502,8 +504,9 @@ void CandidateView::_DrawVertical()
     {
         font_height fontHeight;
         font.GetHeight(&fontHeight);
-        ascent = fontHeight.ascent;
-        lineHeight = fontHeight.ascent + fontHeight.descent + fontHeight.leading;
+        ascent = ceilf(fontHeight.ascent);
+        lineHeight = ceilf(fontHeight.ascent + fontHeight.descent + 
+                           fontHeight.leading);
         fLineHeight = lineHeight;
     }
     float firstLineY = border + ascent;
