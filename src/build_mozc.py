@@ -410,7 +410,7 @@ def ExpandMetaTarget(options, meta_target_name):
     targets = [SRC_DIR + '/android/android.gyp:apk']
   elif target_platform == 'Linux':
     targets = [SRC_DIR + '/server/server.gyp:mozc_server',
-               SRC_DIR + '/renderer/renderer.gyp:mozc_renderer',
+               #SRC_DIR + '/renderer/renderer.gyp:mozc_renderer',
                SRC_DIR + '/gui/gui.gyp:mozc_tool']
     if PkgExists('ibus-1.0 >= 1.4.1'):
       targets.append(SRC_DIR + '/unix/ibus/ibus.gyp:ibus_mozc')
