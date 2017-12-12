@@ -336,11 +336,7 @@ int NamedEventListener::WaitEventOrProcess(int msec, size_t pid) {
 NamedEventNotifier::NamedEventNotifier(const char *name)
     : sem_(SEM_FAILED) {
   const string key_filename = NamedEventUtil::GetEventPath(name);
-#ifdef OS_HAIKU
-  sem_ = ::sem_open(key_filename.c_str(), O_CREAT);
-#else
   sem_ = ::sem_open(key_filename.c_str(), 0);
-#endif
   if (sem_ == SEM_FAILED) {
     LOG(ERROR) << "sem_open failed: " << ::strerror(errno);
   }
