@@ -54,7 +54,6 @@ static const uint32 BAR_MODE_MENU = 'MnMd';
 static const uint32 BAR_TOOLS_MENU = 'MnTl';
 static const uint32 BAR_CONTEXT_MENU = 'MnCx';
 static const uint32 BAR_BAR_MENU = 'Mnbr';
-static const uint32 BAR_TOOLS = 'Mnto';
 
 
 class BarButton : public BButton
