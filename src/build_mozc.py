@@ -170,7 +170,7 @@ def GetGypFileNames(options):
   elif options.target_platform == 'Linux':
     gyp_file_names.extend(glob.glob('%s/unix/*/*.gyp' % SRC_DIR))
     # Add ibus.gyp if ibus version is >=1.4.1.
-    if not PkgExists('ibus-1.0 >= 1.4.1'):
+    if options.variant == 'Haiku' or not PkgExists('ibus-1.0 >= 1.4.1'):
       logging.info('removing ibus.gyp.')
       gyp_file_names.remove('%s/unix/ibus/ibus.gyp' % SRC_DIR)
     if options.variant == 'Haiku':
@@ -412,7 +412,7 @@ def ExpandMetaTarget(options, meta_target_name):
     targets = [SRC_DIR + '/server/server.gyp:mozc_server',
                #SRC_DIR + '/renderer/renderer.gyp:mozc_renderer',
                SRC_DIR + '/gui/gui.gyp:mozc_tool']
-    if PkgExists('ibus-1.0 >= 1.4.1'):
+    if not options.variant == 'Haiku' and PkgExists('ibus-1.0 >= 1.4.1'):
       targets.append(SRC_DIR + '/unix/ibus/ibus.gyp:ibus_mozc')
   elif target_platform == 'Mac':
     targets = [SRC_DIR + '/mac/mac.gyp:DiskImage']
