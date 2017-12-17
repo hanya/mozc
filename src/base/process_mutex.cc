@@ -52,6 +52,9 @@
 #ifdef OS_WIN
 #include "base/win_sandbox.h"
 #endif  // OS_WIN
+#ifdef OS_HAIKU
+#include <OS.h>
+#endif
 
 namespace mozc {
 
@@ -242,6 +245,41 @@ class FileLockManager {
       return false;
     }
 
+#ifdef OS_HAIKU
+    // On Haiku OS, lock for the file by fcntl is not gone
+    // even the process is done which set the lock.
+    // We have to check the lock state of the flag file and check
+    // the process is still living or not.
+    // If the process is still living, keep the file there.
+    // Otherwise, remove the file to free the lock.
+    {
+        struct flock cmd;
+        cmd.l_type = 0;
+        cmd.l_whence = 0;
+        cmd.l_start = 0;
+        cmd.l_len = 0;
+        const int r = fcntl(*fd, F_GETLK, &cmd);
+        if (-1 != r && cmd.l_type != F_UNLCK) {
+            if (cmd.l_pid == getpid()) {
+                VLOG(1) << filename << " is already locked by the same process";
+                return false;
+            }
+            team_info teamInfo;
+            if (get_team_info(cmd.l_pid, &teamInfo) >= B_OK) {
+                VLOG(1) << filename << "is already locked by another process";
+                return false;
+            }
+            // We can remove file once and reopen it to free the lock.
+            ::close(*fd);
+            FileUtil::Unlink(filename);
+            *fd = ::open(filename.c_str(), O_RDWR | O_CREAT | O_TRUNC, 0600);
+            if (-1 == *fd) {
+              LOG(ERROR) << "open() failed:" << ::strerror(errno);
+              return false;
+            }
+        }
+    }
+#endif // OS_HAIKU
     struct flock command;
     command.l_type = F_WRLCK;
     command.l_whence = SEEK_SET;
