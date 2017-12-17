@@ -345,6 +345,9 @@ class UserHistoryPredictorTest : public ::testing::Test {
 };
 
 TEST_F(UserHistoryPredictorTest, UserHistoryPredictorTest) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   {
     UserHistoryPredictor *predictor = GetUserHistoryPredictor();
     predictor->WaitForSyncer();
@@ -524,6 +527,9 @@ TEST_F(UserHistoryPredictorTest, UserHistoryPredictorTest) {
 // has type != CONVERSION.
 // To support such Segments, this test case is created separately.
 TEST_F(UserHistoryPredictorTest, UserHistoryPredictorTest_suggestion) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
@@ -566,6 +572,9 @@ TEST_F(UserHistoryPredictorTest, UserHistoryPredictorTest_suggestion) {
 }
 
 TEST_F(UserHistoryPredictorTest, DescriptionTest) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
 #ifdef DEBUG
   const char kDescription[] = "テスト History";
 #else
@@ -3029,6 +3038,9 @@ TEST_F(UserHistoryPredictorTest, ZeroQueryFromRealtimeConversion) {
 }
 
 TEST_F(UserHistoryPredictorTest, LongCandidateForMobile) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
@@ -3749,6 +3761,9 @@ TEST_F(UserHistoryPredictorTest, ContentWordLearningFromInnerSegmentBoundary) {
 }
 
 TEST_F(UserHistoryPredictorTest, JoinedSegmentsTest_Mobile) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
@@ -3791,6 +3806,9 @@ TEST_F(UserHistoryPredictorTest, JoinedSegmentsTest_Mobile) {
 }
 
 TEST_F(UserHistoryPredictorTest, JoinedSegmentsTest_Desktop) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
@@ -3870,6 +3888,9 @@ TEST_F(UserHistoryPredictorTest, UsageStats) {
 }
 
 TEST_F(UserHistoryPredictorTest, PunctuationLink_Mobile) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
@@ -3989,6 +4010,9 @@ TEST_F(UserHistoryPredictorTest, PunctuationLink_Mobile) {
 }
 
 TEST_F(UserHistoryPredictorTest, PunctuationLink_Desktop) {
+#ifdef OS_HAIKU
+  FLAGS_enable_expansion_for_user_history_predictor = false;
+#endif
   UserHistoryPredictor *predictor = GetUserHistoryPredictor();
   predictor->WaitForSyncer();
   predictor->ClearAllHistory();
