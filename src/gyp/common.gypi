@@ -79,7 +79,7 @@
       '-funsigned-char',
       '-include base/namespace.h',
       '-pipe',
-      '-pthread',
+      #'-pthread',
     ],
     # linux_cflags will be used in Linux except for NaCl.
     'linux_cflags': [
