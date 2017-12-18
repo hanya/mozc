@@ -128,9 +128,9 @@
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
       ['target_platform=="Linux"', {
-        'compiler_target': 'clang',
+        'compiler_target': 'gcc',
         'compiler_target_version_int': 304,  # Clang 3.4 or higher
-        'compiler_host': 'clang',
+        'compiler_host': 'gcc',
         'compiler_host_version_int': 304,  # Clang 3.4 or higher
       }],
     ],
@@ -456,9 +456,9 @@
     ['target_platform=="Linux"', {
       'make_global_settings': [
         ['AR', '<!(which ar)'],
-        ['CC', '<!(which clang)'],
-        ['CXX', '<!(which clang++)'],
-        ['LD', '<!(which ld)'],
+        ['CC', '<!(which gcc)'],
+        ['CXX', '<!(which g++)'],
+        ['LD', '<!(which g++)'],
         ['NM', '<!(which nm)'],
         ['READELF', '<!(which readelf)'],
       ],
