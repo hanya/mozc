@@ -67,6 +67,7 @@ public:
     IM_Mode CompositionModeToMode(mozc::commands::CompositionMode mode) const;
     mozc::commands::CompositionMode ModeToCompositionMode(IM_Mode mode) const;
     const char * GetToolName(Mozc_Tool tool) const;
+    void UpdatePreeditMethod();
 
 private:
     std::unique_ptr<mozc::client::ClientInterface>    fClient;
@@ -75,6 +76,8 @@ private:
                  mozc::commands::KeyEvent *key_event) const;
     void _AddModifiers(uint32 mod, 
                        mozc::commands::KeyEvent *key_event) const;
+
+    mozc::config::Config::PreeditMethod     nPreeditMethod;
 };
 
 } // namespace immozc

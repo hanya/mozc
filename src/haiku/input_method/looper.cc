@@ -550,6 +550,7 @@ void MozcLooper::_HandleMethodActivated(bool active)
                         new mozc::commands::Output());
         if (fEngine->TurnOn(output.get())) {
             _HandleStatus(*output);
+            fEngine->UpdatePreeditMethod();
         }
         _ModeChanged();
         

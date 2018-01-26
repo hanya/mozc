@@ -56,6 +56,8 @@ MozcEngine::MozcEngine()
     char **argv = _argv;
     mozc::InitMozc(argv[0], &argc, &argv, false);
     
+    nPreeditMethod = mozc::config::Config::ROMAN;
+
     fClient = std::unique_ptr<mozc::client::ClientInterface>(
                     mozc::client::ClientFactory::NewClient());//);
     // if text can be deleted around preedit, set mozc::commands::capability.
@@ -182,6 +184,15 @@ bool MozcEngine::SendCommand(const mozc::commands::SessionCommand &command,
     return fClient->SendCommand(command, output);
 }
 
+void MozcEngine::UpdatePreeditMethod()
+{
+    mozc::config::Config config;
+    if (fClient->GetConfig(&config)) {
+        nPreeditMethod = config.has_preedit_method() ?
+                config.preedit_method() : mozc::config::Config::ROMAN;
+    }
+}
+
 bool MozcEngine::SendKey(uint8 byte, int32 key, uint32 mod, 
                          mozc::commands::Output *output)
 {
@@ -245,6 +256,28 @@ static const uint8 SPECIAL_KEYS[] = {
         0,0,0,0,0, 0, // ff
 };
 
+const char* mapping_jp[] = {
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "ぬ", "ふ", "あ", "う", "え", "お", "や", "ゆ", "よ", "け", "れ", "ね", "ほ", "る", "め",
+    "わ", "ぬ", "ふ", "あ", "う", "え", "お", "や", "ゆ", "よ", "け", "れ", "ね", "ほ", "る", "め",
+    "゛", "ち", "こ", "そ", "し", "い", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "つ", "゜", "", "む", "へ", "ろ",
+    "゛", "ち", "こ", "そ", "し", "い", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "つ", "゜", "ー", "む", "へ", "",
+};
+
+const char* mapping_shift_jp[] = {
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "ぬ", "ふ", "ぁ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "け", "れ", "、", "ほ", "。", "・",
+    "を", "ぬ", "ふ", "ぁ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "け", "れ", "、", "ほ", "。", "・",
+    "゛", "ち", "こ", "そ", "し", "ぃ", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "っ", "「", "", "」", "を", "ろ",
+    "゛", "ち", "こ", "そ", "し", "ぃ", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "っ", "「", "ー", "」", "を", "",
+};
+
 bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod, 
                         KeyEvent *key_event) const
 {
@@ -260,8 +293,31 @@ bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod,
     }
     if ('!' <= byte && byte <= '~') {
         // Ascii characters
+        uint32 shift_state = *mod & B_SHIFT_KEY;
         *mod = *mod & (~B_SHIFT_KEY);
         key_event->set_key_code(byte);
+        if (nPreeditMethod == mozc::config::Config::KANA) {
+            std::string key_string;
+            if (byte == '\\') {
+                // remap \\ character, only for jp mapping
+                if (key == 0x6a) {
+                    byte = '|'; // -
+                } else {
+                    // key == 0x6b
+                    byte = '_'; // RO
+                }
+            }
+            if (!shift_state) {
+                key_string = mapping_jp[byte];
+            } else {
+                if (key == 0x1b && byte == '_') {
+                    // Shift + 0: _ for WO
+                    byte = '~';
+                }
+                key_string = mapping_shift_jp[byte];
+            }
+            key_event->set_key_string(key_string);
+        }
         return true;
     }
     static_assert(sizeof(SPECIAL_KEYS) == 256, "Invalid size of SPECIAL_KEYS");
