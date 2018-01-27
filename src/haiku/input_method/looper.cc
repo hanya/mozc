@@ -169,9 +169,10 @@ MozcLooper::MozcLooper(MozcMethod *method)
       fLastSync(system_time())
 {
     if (be_app) {
-        be_app->Lock();
-        be_app->AddHandler(this);
-        be_app->Unlock();
+        if (be_app->Lock()) {
+            be_app->AddHandler(this);
+            be_app->Unlock();
+        }
     }
 #if DEBUG
     fLogger = std::unique_ptr<BMessenger>(new BMessenger(LOGGER));
@@ -244,9 +245,10 @@ MozcLooper::MozcLooper(MozcMethod *method)
 MozcLooper::~MozcLooper()
 {
     if (be_app) {
-        be_app->Lock();
-        be_app->RemoveHandler(this);
-        be_app->Unlock();
+        if (be_app->Lock()) {
+            be_app->RemoveHandler(this);
+            be_app->Unlock();
+        }
     }
 #if DEBUG
     _SendLog("MozcLooper.dector");
@@ -294,10 +296,12 @@ void MozcLooper::Quit()
     if (fOwner != NULL) {
         fOwner->SetMenu(NULL, BMessenger());
     }
-    fBar->Lock();
-    fBar->Quit();
-    fCandidateWindow->Lock();
-    fCandidateWindow->Quit();
+    if (fBar->Lock()) {
+        fBar->Quit();
+    }
+    if (fCandidateWindow->Lock()) {
+        fCandidateWindow->Quit();
+    }
     BLooper::Quit();
 }
 
