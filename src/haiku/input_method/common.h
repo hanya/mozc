@@ -103,7 +103,6 @@ enum Mozc_Tool {
     TOOL_END,
 };
 
-
 #define IM_KANA_MAPPING_VALUE     "kana.map"
 
 enum IM_Kana_Mapping {
