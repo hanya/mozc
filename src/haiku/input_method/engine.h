@@ -68,6 +68,7 @@ public:
     mozc::commands::CompositionMode ModeToCompositionMode(IM_Mode mode) const;
     const char * GetToolName(Mozc_Tool tool) const;
     void UpdatePreeditMethod();
+    void SetKanaMapping(IM_Kana_Mapping mapping);
 
 private:
     std::unique_ptr<mozc::client::ClientInterface>    fClient;
@@ -78,6 +79,9 @@ private:
                        mozc::commands::KeyEvent *key_event) const;
 
     mozc::config::Config::PreeditMethod     nPreeditMethod;
+    IM_Kana_Mapping mnKanaMapping;
+    const char** mpKanaMapping;
+    const char** mpKanaShiftMapping;
 };
 
 } // namespace immozc

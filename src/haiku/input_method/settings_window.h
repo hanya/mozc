@@ -27,93 +27,44 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef SETTINGS_WINDOW_H_
+#define SETTINGS_WINDOW_H_
+
+#include "common.h"
+
+#include <Window.h>
+
+class BMenuField;
+class BPopUpMenu;
 
 namespace immozc {
 
-// Special keys defined by custom keymap.
-enum {
-    // 0x6c
-    K_MUHENKAN = 0xf4,
-    // 0x6d
-    K_HENKAN = 0xf5,
-    // 0x3b Eisu, +Shift -> CapsLock
-    K_EISU = 0xf6,
-    K_CAPS_LOCK = 0xf7,
-};
-
-
-enum {
-    IM_CANDIDATE_WINDOW_SHOW = 'IMcs',
-    IM_CANDIDATE_WINDOW_HIDE = 'IMch',
+class SettingsWindow : public BWindow
+{
+public:
+    SettingsWindow(BLooper *pLooper);
+    virtual ~SettingsWindow();
     
-    IM_METHOD_ACTIVATED = 'IMac',
-    IM_METHOD_DEACTIVATED = 'IMda',
+    virtual bool QuitRequested();
+    virtual void MessageReceived(BMessage *msg);
     
-    IM_RELOAD = 'IMrl',
+    enum {
+        IM_SETTINGS_WINDOW = 'IMst',
+        IM_SETTINGS_WINDOW_CLOSED = 'IMsq',
+        
+        IM_SETTINGS_SET = 'IMss',
+    };
     
-    IM_MODE_CHANGE_REQUEST = 'IMmr',
-    IM_MODE_CHANGED = 'IMmc',
+private:
+    void        _Init(BMessage* msg);
+    BMessage*   _CreateKanaMappingMessage(IM_Kana_Mapping value) const;
     
-    IM_BAR_SHOW = 'IMbs',
-    IM_BAR_HIDE = 'IMbh',
-    IM_BAR_HORIZONTAL = 'IMoh',
-    IM_BAR_VERTICAL = 'IMov',
-    IM_BAR_MOVED = 'IMmv',
-    IM_BAR_ORIENTATION_CHANGED = 'IMdr',
-    IM_BAR_SHOW_PERMANENT = 'IMsp',
-    IM_BAR_HIDE_PERMANENT = 'IMhp',
+    BLooper* mpLooper;
+    BMenuField* mpKanaMappingMF;
+    BPopUpMenu* mpKanaMappingPM;
     
-    IM_MODE = 'IMmd',
-    IM_TOOL = 'IMtl',
-    
-    IM_SELECT_CANDIDATE = 'IMsc',
-    IM_HIGHLIGHT_CANDIDATE = 'IMhc',
-    
-    IM_KANA_MAPPING_MSG = 'IMkm',
-};
-
-
-#define IM_ACTIVE       "active"
-#define IM_MODE_MODE    "mode"
-
-enum IM_Mode {
-    MODE_DIRECT = 1,
-    MODE_HIRAGANA = 2,
-    MODE_FULLWIDTH_KATAKANA,
-    MODE_HALFWIDTH_ASCII,
-    MODE_FULLWIDTH_ASCII,
-    MODE_HALFWIDTH_KATAKANA,
-    
-    MODE_END,
-};
-
-
-#define MOZC_TOOL_TOOL    "tool"
-
-enum Mozc_Tool {
-    TOOL_ABOUT = 1,
-    TOOL_CHARACTER_PAD = 2,
-    TOOL_CONFIG,
-    TOOL_DICTIONARY,
-    TOOL_HAND_WRITING,
-    TOOL_WORD_REGISTER,
-    
-    TOOL_END,
-};
-
-
-#define IM_KANA_MAPPING_VALUE     "kana.map"
-
-enum IM_Kana_Mapping {
-    KANA_MAPPING_CUSTOM,
-    KANA_MAPPING_JP,
-    KANA_MAPPING_US,
-
-    KANA_MAPPING_END,
 };
 
 } // namespace immozc
 
-#endif // COMMON_H_
+#endif // SETTINGS_WINDOW_H_

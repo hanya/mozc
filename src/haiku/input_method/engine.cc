@@ -55,8 +55,10 @@ MozcEngine::MozcEngine()
     char *_argv[] = {argv0, NULL};
     char **argv = _argv;
     mozc::InitMozc(argv[0], &argc, &argv, false);
-    
+
     nPreeditMethod = mozc::config::Config::ROMAN;
+
+    SetKanaMapping(KANA_MAPPING_JP);
 
     fClient = std::unique_ptr<mozc::client::ClientInterface>(
                     mozc::client::ClientFactory::NewClient());//);
@@ -278,6 +280,44 @@ const char* mapping_shift_jp[] = {
     "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "っ", "「", "ー", "」", "を", "",
 };
 
+const char* mapping_us[] = {
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "ぬ", "け", "あ", "う", "え", "や", "け", "よ", "わ", "ゆ", "へ", "ね", "ほ", "る", "め",
+    "わ", "ぬ", "ふ", "あ", "う", "え", "お", "や", "ゆ", "よ", "れ", "れ", "ね", "へ", "る", "め",
+    "ふ", "ち", "こ", "そ", "し", "い", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "つ", "゛", "む", "゜", "お", "ほ",
+    "ろ", "ち", "こ", "そ", "し", "い", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "つ", "゛", "む", "゜", "ろ", "",
+};
+
+const char* mapping_shift_us[] = {
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+    "", "ぬ", "け", "ぁ", "ぅ", "ぇ", "ゃ", "け", "ょ", "を", "ゅ", "へ", "、", "ー", "。", "・",
+    "を", "ぬ", "ふ", "ぁ", "ぅ", "ぇ", "ぉ", "ゃ", "ゅ", "ょ", "れ", "れ", "、", "へ", "。", "・",
+    "ふ", "ち", "こ", "そ", "し", "ぃ", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "っ", "゛", "」", "「", "ぉ", "ー",
+    "ろ", "ち", "こ", "そ", "し", "ぃ", "は", "き", "く", "に", "ま", "の", "り", "も", "み", "ら",
+    "せ", "た", "す", "と", "か", "な", "ひ", "て", "さ", "ん", "っ", "゛", "」", "「", "ろ", "",
+};
+
+
+void MozcEngine::SetKanaMapping(IM_Kana_Mapping mapping)
+{
+    // CUSTOM is not supported yet
+    if (KANA_MAPPING_CUSTOM < mapping && mapping < KANA_MAPPING_END) {
+        mnKanaMapping = mapping;
+        if (mnKanaMapping == KANA_MAPPING_JP) {
+            mpKanaMapping = mapping_jp;
+            mpKanaShiftMapping = mapping_shift_jp;
+        } else if (mnKanaMapping == KANA_MAPPING_US) {
+            mpKanaMapping = mapping_us;
+            mpKanaShiftMapping = mapping_shift_us;
+        }
+    }
+}
+
 bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod, 
                         KeyEvent *key_event) const
 {
@@ -298,7 +338,7 @@ bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod,
         key_event->set_key_code(byte);
         if (nPreeditMethod == mozc::config::Config::KANA) {
             std::string key_string;
-            if (byte == '\\') {
+            if (mnKanaMapping == KANA_MAPPING_JP && byte == '\\') {
                 // remap \\ character, only for jp mapping
                 if (key == 0x6a) {
                     byte = '|'; // -
@@ -308,13 +348,13 @@ bool MozcEngine::_AddKey(uint8 byte, int32 key, uint32 *mod,
                 }
             }
             if (!shift_state) {
-                key_string = mapping_jp[byte];
+                key_string = mpKanaMapping[byte];
             } else {
                 if (key == 0x1b && byte == '_') {
                     // Shift + 0: _ for WO
                     byte = '~';
                 }
-                key_string = mapping_shift_jp[byte];
+                key_string = mpKanaShiftMapping[byte];
             }
             key_event->set_key_string(key_string);
         }

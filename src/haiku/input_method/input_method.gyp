@@ -42,6 +42,7 @@
         'candidate_window.cc',
         'engine.cc',
         'indicator.cc',
+        'settings_window.cc',
         'looper.cc',
       ],
       'dependencies': [
@@ -127,6 +128,7 @@
           'inputs': [
             './bar.cc',
             './looper.cc',
+            './settings_window.cc',
           ],
           'outputs': [
             '<(gen_out_dir)/input_method.pre',

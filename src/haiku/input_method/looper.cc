@@ -35,6 +35,7 @@
 #include "haiku/input_method/engine.h"
 #include "haiku/input_method/indicator.h"
 #include "haiku/input_method/method.h"
+#include "haiku/input_method/settings_window.h"
 //#include "base/logging.h" // todo, remove this
 #include "base/file_util.h"
 #include "base/system_util.h"
@@ -43,6 +44,7 @@
 #include <Catalog.h>
 #include <File.h>
 #include <Input.h>
+#include <LayoutBuilder.h>
 #include <Menu.h>
 #include <MenuItem.h>
 #include <Message.h>
@@ -78,6 +80,7 @@ namespace immozc {
 #define VAR_BAR_HIDDEN       "bar.hidden"
 #define VAR_BAR_TOOLS_HIDDEN "bar.tools_hidden"
 #define VAR_DIRECT_INPUT_USE "direct_input.use"
+#define VAR_KANA_MAPPING     "kana.map"
 
 struct Settings
 {
@@ -89,6 +92,7 @@ struct Settings
     bool bar_tools_hidden;
     // use Mozc direct input or not. If false, Roman IM is used as direct mode.
     //bool direct_input_use;
+    int32 kana_mapping;
     bool changed;
     
     Settings()
@@ -100,6 +104,7 @@ struct Settings
         bar_hidden = false;
         bar_tools_hidden = false;
         //direct_input_use = false;
+        kana_mapping = KANA_MAPPING_JP;
         changed = false;
         
     }
@@ -126,6 +131,11 @@ void MozcLooper::_LoadSettings()
             msg.FindBool(VAR_BAR_HIDDEN, &fSettings->bar_hidden);
             msg.FindBool(VAR_BAR_TOOLS_HIDDEN, &fSettings->bar_tools_hidden);
             //msg.FindBool(VAR_DIRECT_INPUT_USE, &fSettings->direct_input_use);
+            msg.FindInt32(VAR_KANA_MAPPING, &fSettings->kana_mapping);
+            if (fSettings->kana_mapping < KANA_MAPPING_CUSTOM ||
+                  KANA_MAPPING_END < fSettings->kana_mapping) {
+                fSettings->kana_mapping = KANA_MAPPING_JP;
+            }
         }
     }
 }
@@ -144,6 +154,7 @@ void MozcLooper::_WriteSettings()
             msg.AddBool(VAR_BAR_HIDDEN, fSettings->bar_hidden);
             msg.AddBool(VAR_BAR_TOOLS_HIDDEN, fSettings->bar_tools_hidden);
             //msg.AddBool(VAR_DIRECT_INPUT_USE, fSettings->direct_input_use);
+            msg.AddInt32(VAR_KANA_MAPPING, fSettings->kana_mapping);
             
             msg.Flatten(&f);
         }
@@ -182,6 +193,8 @@ MozcLooper::MozcLooper(MozcMethod *method)
     fSettings = std::unique_ptr<Settings>(new Settings());
     _LoadSettings();
     
+    fSettingsWindow = NULL;
+
     fEngine = std::unique_ptr<MozcEngine>(new MozcEngine());
     
     fBar = std::unique_ptr<MozcBar>(new MozcBar(this, 
@@ -207,36 +220,41 @@ MozcLooper::MozcLooper(MozcMethod *method)
     // Create menu which is shown on the desckbar icon.
     fDeskbarMenu = std::unique_ptr<BMenu>(new BMenu("Menu"));
     
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Hiragana"), 
-            _CreateModeMessage(MODE_HIRAGANA)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Katakana"), 
-            _CreateModeMessage(MODE_FULLWIDTH_KATAKANA)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Alphabet"), 
-            _CreateModeMessage(MODE_HALFWIDTH_ASCII)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Alphabet"), 
-            _CreateModeMessage(MODE_FULLWIDTH_ASCII)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Katakana"), 
-            _CreateModeMessage(MODE_HALFWIDTH_KATAKANA)));
-    fDeskbarMenu->AddSeparatorItem();
-    
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Word register"), 
-            _CreateToolMessage(TOOL_WORD_REGISTER)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Dictionary"), 
-            _CreateToolMessage(TOOL_DICTIONARY)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Character pad"), 
-            _CreateToolMessage(TOOL_CHARACTER_PAD)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Handwriting"), 
-            _CreateToolMessage(TOOL_HAND_WRITING)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Configuration"), 
-            _CreateToolMessage(TOOL_CONFIG)));
-    fDeskbarMenu->AddSeparatorItem();
-    
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("Show bar"), 
-            new BMessage(IM_BAR_SHOW_PERMANENT)));
-    fDeskbarMenu->AddSeparatorItem();
-    //fDeskbarMenu->AddItem(new BMenuItem("Mozc direct input",
-    //        new BMessage(MOZC_DIRECT_INPUT)));
-    fDeskbarMenu->AddItem(new BMenuItem(B_TRANSLATE("About Mozc"), 
+    BLayoutBuilder::Menu<>(fDeskbarMenu.get())
+        .AddItem(new BMenuItem(B_TRANSLATE("Hiragana"),
+            _CreateModeMessage(MODE_HIRAGANA)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Katakana"),
+            _CreateModeMessage(MODE_FULLWIDTH_KATAKANA)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Alphabet"),
+            _CreateModeMessage(MODE_HALFWIDTH_ASCII)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Alphabet"),
+            _CreateModeMessage(MODE_FULLWIDTH_ASCII)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Katakana"),
+            _CreateModeMessage(MODE_HALFWIDTH_KATAKANA)))
+        .AddSeparator()
+
+        .AddItem(new BMenuItem(B_TRANSLATE("Word register"),
+            _CreateToolMessage(TOOL_WORD_REGISTER)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Dictionary"),
+            _CreateToolMessage(TOOL_DICTIONARY)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Character pad"),
+            _CreateToolMessage(TOOL_CHARACTER_PAD)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Handwriting"),
+            _CreateToolMessage(TOOL_HAND_WRITING)))
+        .AddItem(new BMenuItem(B_TRANSLATE("Configuration"),
+            _CreateToolMessage(TOOL_CONFIG)))
+        .AddSeparator()
+
+        .AddItem(new BMenuItem(B_TRANSLATE("Setting..."),
+            new BMessage(SettingsWindow::IM_SETTINGS_WINDOW)))
+        .AddSeparator()
+
+        .AddItem(new BMenuItem(B_TRANSLATE("Show bar"),
+            new BMessage(IM_BAR_SHOW_PERMANENT)))
+        .AddSeparator()
+    //  .AddItem(new BMenuItem("Mozc direct input",
+    //        new BMessage(MOZC_DIRECT_INPUT)))
+        .AddItem(new BMenuItem(B_TRANSLATE("About Mozc"),
             _CreateToolMessage(TOOL_ABOUT)));
     
     Run();
@@ -291,6 +309,11 @@ void MozcLooper::Quit()
     // this method is not called while shutdown. 
 	// In general, input_server does not closed while PC is ON. 
     // So we have to store or sync settings in other place too.
+    if (fSettingsWindow) {
+        BMessage msg(B_QUIT_REQUESTED);
+        fSettingsWindow->MessageReceived(&msg);
+    }
+    fSettingsWindow = NULL;
     _WriteSettings();
     _SyncDataIfRequired(true);
     if (fOwner != NULL) {
@@ -504,6 +527,31 @@ void MozcLooper::MessageReceived(BMessage *msg)
             }
             break;
         }
+        case IM_KANA_MAPPING_MSG:
+        {
+            int32 mapping;
+            if (msg->FindInt32(IM_KANA_MAPPING_VALUE, &mapping) == B_OK) {
+                if (KANA_MAPPING_CUSTOM < mapping && mapping < KANA_MAPPING_END) {
+                    fSettings->kana_mapping = mapping;
+                    fSettings->changed = true;
+                    fEngine->SetKanaMapping(static_cast<IM_Kana_Mapping>(mapping));
+                }
+            }
+        }
+        case SettingsWindow::IM_SETTINGS_WINDOW:
+        {
+            _UpdateDeskbarMenu();
+            _ShowSettingsWindow();
+            break;
+        }
+        case SettingsWindow::IM_SETTINGS_WINDOW_CLOSED:
+        {
+#if DEBUG
+            _SendLog("Settings window closed");
+#endif
+            fSettingsWindow = NULL;
+            break;
+        }
         /*
         case Indicator::IM_INDICATOR_SHOWN:
         {
@@ -511,11 +559,33 @@ void MozcLooper::MessageReceived(BMessage *msg)
             break;
         }
         */
+#if DEBUG
+        case LOG_COMMAND:
+        {
+            const char* s;
+            if (msg->FindString(LOG_NAME, &s) == B_OK) {
+                _SendLog(s);
+            }
+            break;
+        }
+#endif
         default:
         {
             BLooper::MessageReceived(msg);
             break;
         }
+    }
+}
+
+void MozcLooper::_ShowSettingsWindow()
+{
+    if (!fSettingsWindow) {
+        BMessage msg(SettingsWindow::IM_SETTINGS_SET);
+        msg.AddInt32(IM_KANA_MAPPING_VALUE, static_cast<int32>(fSettings->kana_mapping));
+
+        fSettingsWindow = new SettingsWindow(this);
+        fSettingsWindow->MessageReceived(&msg);
+        fSettingsWindow->Show();
     }
 }
 

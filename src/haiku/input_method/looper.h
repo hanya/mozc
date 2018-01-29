@@ -56,6 +56,7 @@ class MozcBar;
 class MozcEngine;
 class MozcMethod;
 struct Settings;
+class SettingsWindow;
 
 class MozcLooper : public BLooper
 {
@@ -86,6 +87,7 @@ private:
     bool                                 fMethodStarted;
     bigtime_t                            fLastSync;
     std::unique_ptr<Settings>            fSettings;
+    SettingsWindow*                      fSettingsWindow;
     
     void _HandleKeyDown(BMessage *msg);
     void _HandleLocationRequest(BMessage *msg);
@@ -117,6 +119,7 @@ private:
     void         _WriteSettings();
     std::string  _GetSettingsPath();
     //const uchar * _GetModeIcon(IM_Mode mode) const;
+    void         _ShowSettingsWindow();
     
 #if DEBUG
     std::unique_ptr<BMessenger>      fLogger;

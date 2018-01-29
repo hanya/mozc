@@ -44,18 +44,18 @@ class Catkeys:
                 data[(parts[0], parts[1])] = parts[3].rstrip()
         self.data = data
         self.header = lines[0].rstrip()
-    
+
     def get(self, key):
         return self.data.get(key, None)
     
     def set(self, key, value):
         self.data[key] = value
-    
+
     def write(self, path):
         with open(path, "w") as f:
             f.write(self.header)
             f.write("\n")
-            for key, value in self.data.items():
+            for key, value in sorted(self.data.items()):
                 f.write("{}\t{}\t\t{}\n".format(key[0], key[1], value))
 
 def copy(en, src, dest):
