@@ -1,4 +1,4 @@
-1	English	x-vnd.Mozc-InputMethod	2454961498
+1	English	x-vnd.Mozc-InputMethod	3701232624
 About Mozc	InputMethod		Mozc について
 Bar	InputMethod		言語バー
 Character pad	InputMethod		文字パレット
@@ -13,6 +13,7 @@ Handwriting	InputMethod		手書き文字認識
 Hide bar	InputMethod		言語バー非表示
 Hiragana	InputMethod		ひらがな
 Horizontal	InputMethod		横置き
+Input Method Settings	InputMethod		入力メソッド設定
 Kana mapping	InputMethod		かなレイアウト
 Mode	InputMethod		入力モード
 Setting...	InputMethod		設定...

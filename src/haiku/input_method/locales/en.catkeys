@@ -1,23 +1,24 @@
-1	English	x-vnd.Mozc-InputMethod	2454961498
-About Mozc	InputMethod		About Mozc
-Bar	InputMethod		Bar
-Character pad	InputMethod		Character pad
-Configuration	InputMethod		Configuration
-Dictionary	InputMethod		Dictionary
+1	English	x-vnd.Mozc-InputMethod	3701232624
 Direct	InputMethod		Direct
-Fullwidth Alphabet	InputMethod		Fullwidth Alphabet
-Fullwidth Katakana	InputMethod		Fullwidth Katakana
-Halfwidth Alphabet	InputMethod		Halfwidth Alphabet
-Halfwidth Katakana	InputMethod		Halfwidth Katakana
-Handwriting	InputMethod		Handwriting
-Hide bar	InputMethod		Hide bar
-Hiragana	InputMethod		Hiragana
-Horizontal	InputMethod		Horizontal
-Kana mapping	InputMethod		Kana mapping
-Mode	InputMethod		Mode
-Setting...	InputMethod		Setting...
-Show bar	InputMethod		Show bar
+Character pad	InputMethod		Character pad
+About Mozc	InputMethod		About Mozc
+Configuration	InputMethod		Configuration
 Show/hide tools	InputMethod		Show/hide tools
-Tools	InputMethod		Tools
-Vertical	InputMethod		Vertical
+Mode	InputMethod		Mode
+Bar	InputMethod		Bar
+Horizontal	InputMethod		Horizontal
 Word register	InputMethod		Word register
+Handwriting	InputMethod		Handwriting
+Dictionary	InputMethod		Dictionary
+Hiragana	InputMethod		Hiragana
+Fullwidth Alphabet	InputMethod		Fullwidth Alphabet
+Show bar	InputMethod		Show bar
+Hide bar	InputMethod		Hide bar
+Fullwidth Katakana	InputMethod		Fullwidth Katakana
+Vertical	InputMethod		Vertical
+Kana mapping	InputMethod		Kana mapping
+Input Method Settings	InputMethod		Input Method Settings
+Halfwidth Alphabet	InputMethod		Halfwidth Alphabet
+Tools	InputMethod		Tools
+Setting...	InputMethod		Setting...
+Halfwidth Katakana	InputMethod		Halfwidth Katakana

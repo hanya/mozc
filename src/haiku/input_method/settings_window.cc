@@ -49,7 +49,7 @@ namespace immozc {
 SettingsWindow::SettingsWindow(BLooper* pLooper)
     : BWindow(
         BRect(50, 50, 100, 100),
-        "Input Method Settings",
+        B_TRANSLATE("Input Method Settings"),
         B_TITLED_WINDOW_LOOK,
         B_NORMAL_WINDOW_FEEL,
         B_NOT_RESIZABLE |
