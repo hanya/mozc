@@ -374,7 +374,9 @@ void MozcLooper::MessageReceived(BMessage *msg)
             switch (opcode)
             {
                 case B_INPUT_METHOD_LOCATION_REQUEST:
-                    _HandleLocationRequest(msg);
+                    if (fMethodStarted) {
+                        _HandleLocationRequest(msg);
+                    }
                     break;
                 case B_INPUT_METHOD_STOPPED:
                     // Canceled by some external action, 
