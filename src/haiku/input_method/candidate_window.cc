@@ -190,8 +190,8 @@ void CandidateView::SetData(std::unique_ptr<mozc::commands::Output> output)
                                 fOutput->candidates();
                 bool changed = false;
                 for (int i = 0; i < prev_candidates.candidate_size(); ++i) {
-                    if (prev_candidates.candidate(i).id() != 
-                                curr_candidates.candidate(i).id()) {
+                    if (prev_candidates.candidate(i).value() != 
+                                curr_candidates.candidate(i).value()) {
                         changed = true;
                         break;
                     }
