@@ -58,12 +58,13 @@ SettingsWindow::SettingsWindow(BLooper* pLooper)
     mpLooper(pLooper)
 {
     mpKanaMappingPM = new BPopUpMenu("kana_mappingPM");
-    mpKanaMappingPM->AddItem(new BMenuItem("JP",
-            _CreateKanaMappingMessage(KANA_MAPPING_JP)));
-    mpKanaMappingPM->AddItem(new BMenuItem("US",
-            _CreateKanaMappingMessage(KANA_MAPPING_US)));
+    BLayoutBuilder::Menu<>(mpKanaMappingPM)
+        .AddItem("JP",
+            _CreateKanaMappingMessage(KANA_MAPPING_JP))
+        .AddItem("US",
+            _CreateKanaMappingMessage(KANA_MAPPING_US));
     mpKanaMappingMF = new BMenuField("kana_mappingMF", "", mpKanaMappingPM);
-    
+
     BLayoutBuilder::Group<>(this, B_VERTICAL)
         .SetInsets(6, 6, 6, 6)
         .AddGrid()
@@ -71,7 +72,7 @@ SettingsWindow::SettingsWindow(BLooper* pLooper)
             .Add(mpKanaMappingMF, 1, 1)
         .End()
         .AddGlue();
-    
+
     Layout(true);
     CenterOnScreen();
 }

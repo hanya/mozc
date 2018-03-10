@@ -59,16 +59,16 @@ static const uint32 BAR_BAR_MENU = 'Mnbr';
 class BarButton : public BButton
 {
 public:
-    BarButton(const char *name, const char *tooltip, 
+    BarButton(const char *name, const char *tooltip,
                 BMessage *msg, MozcBar *target);
     virtual ~BarButton();
     virtual void MouseDown(BPoint where);
-    
+
 private:
     MozcBar *fTarget;
 };
 
-BarButton::BarButton(const char *name, const char *tooltip, 
+BarButton::BarButton(const char *name, const char *tooltip,
                     BMessage *msg, MozcBar *target)
     : BButton(name, NULL, msg),
       fTarget(target)
@@ -105,7 +105,7 @@ MozcBar::MozcBar(MozcLooper *looper, orientation ort, float size)
         B_FLOATING_ALL_WINDOW_FEEL,
         B_AUTO_UPDATE_SIZE_LIMITS |
         B_NOT_CLOSABLE | B_NOT_ZOOMABLE |
-        B_NOT_MINIMIZABLE | B_NOT_RESIZABLE | 
+        B_NOT_MINIMIZABLE | B_NOT_RESIZABLE |
         B_AVOID_FOCUS |
         B_WILL_ACCEPT_FIRST_CLICK),
      fLooper(looper),
@@ -115,96 +115,82 @@ MozcBar::MozcBar(MozcLooper *looper, orientation ort, float size)
      fActive(false)
 {
     _Init();
-    SetLook(fOrientation == B_HORIZONTAL ? 
+    SetLook(fOrientation == B_HORIZONTAL ?
             kLeftTitledWindowLook : B_FLOATING_WINDOW_LOOK);
-    
-    fModeButton = new BarButton("mode", B_TRANSLATE("Mode"), 
+
+    fModeButton = new BarButton("mode", B_TRANSLATE("Mode"),
                         new BMessage(BAR_MODE_MENU), this);
     fModeButton->SetIcon(fDirectIcon.get());
-    
-    fToolsButton = new BarButton("tools", B_TRANSLATE("Tools"), 
+
+    fToolsButton = new BarButton("tools", B_TRANSLATE("Tools"),
                         new BMessage(BAR_TOOLS_MENU), this);
     fToolsButton->SetIcon(fToolsIcon.get());
-    
+
     BLayoutBuilder::Group<>(this, fOrientation, 0.)
         .SetInsets(0.)
         .Add(fModeButton)
         .Add(fToolsButton);
-    
+
     fModeMenu = std::unique_ptr<BPopUpMenu>(new BPopUpMenu("modeMenu", false));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Direct"), 
-                    new BMessage(MODE_DIRECT)));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Hiragana"), 
-                    new BMessage(MODE_HIRAGANA)));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Katakana"), 
-                    new BMessage(MODE_FULLWIDTH_KATAKANA)));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Alphabet"), 
-                    new BMessage(MODE_HALFWIDTH_ASCII)));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Alphabet"), 
-                    new BMessage(MODE_FULLWIDTH_ASCII)));
-    fModeMenu->AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Katakana"), 
-                    new BMessage(MODE_HALFWIDTH_KATAKANA)));
-    
+    BLayoutBuilder::Menu<>(fModeMenu.get())
+        .AddItem(B_TRANSLATE("Direct"), new BMessage(MODE_DIRECT))
+        .AddItem(B_TRANSLATE("Hiragana"), new BMessage(MODE_HIRAGANA))
+        .AddItem(B_TRANSLATE("Fullwidth Katakana"), new BMessage(MODE_FULLWIDTH_KATAKANA))
+        .AddItem(B_TRANSLATE("Halfwidth Alphabet"), new BMessage(MODE_HALFWIDTH_ASCII))
+        .AddItem(B_TRANSLATE("Fullwidth Alphabet"), new BMessage(MODE_FULLWIDTH_ASCII))
+        .AddItem(B_TRANSLATE("Halfwidth Katakana"), new BMessage(MODE_HALFWIDTH_KATAKANA));
     fModeMenu->ItemAt(1)->SetMarked(true);
     fModeMenu->SetRadioMode(false);
-    
+
     fToolsMenu = std::unique_ptr<BPopUpMenu>(
             new BPopUpMenu("toolsMenu", false));
     fToolsMenu->SetRadioMode(false);
-    fToolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Word register"), 
-                _CreateToolMessage(TOOL_WORD_REGISTER)));
-    fToolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Dictionary"), 
-                _CreateToolMessage(TOOL_DICTIONARY)));
-    fToolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Character pad"), 
-                _CreateToolMessage(TOOL_CHARACTER_PAD)));
-    fToolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Handwriting"), 
-                _CreateToolMessage(TOOL_HAND_WRITING)));
-    fToolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Configuration"), 
-                _CreateToolMessage(TOOL_CONFIG)));
-    
+    BLayoutBuilder::Menu<>(fToolsMenu.get())
+        .AddItem(B_TRANSLATE("Word register"), _CreateToolMessage(TOOL_WORD_REGISTER))
+        .AddItem(B_TRANSLATE("Dictionary"), _CreateToolMessage(TOOL_DICTIONARY))
+        .AddItem(B_TRANSLATE("Character pad"), _CreateToolMessage(TOOL_CHARACTER_PAD))
+        .AddItem(B_TRANSLATE("Handwriting"), _CreateToolMessage(TOOL_HAND_WRITING))
+        .AddItem(B_TRANSLATE("Configuration"), _CreateToolMessage(TOOL_CONFIG));
+
     fContextMenu = std::unique_ptr<BPopUpMenu>(
             new BPopUpMenu("contextMenu", false));
     fContextMenu->SetRadioMode(false);
-    
+
     BPopUpMenu *toolsMenu = new BPopUpMenu(B_TRANSLATE("Tools"), false);
     toolsMenu->SetRadioMode(false);
-    toolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Word register"), 
-                _CreateToolMessage(TOOL_WORD_REGISTER)));
-    toolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Dictionary"), 
-                _CreateToolMessage(TOOL_DICTIONARY)));
-    toolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Character pad"), 
-                _CreateToolMessage(TOOL_CHARACTER_PAD)));
-    toolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Handwriting"), 
-                _CreateToolMessage(TOOL_HAND_WRITING)));
-    toolsMenu->AddItem(new BMenuItem(B_TRANSLATE("Configuration"), 
-                _CreateToolMessage(TOOL_CONFIG)));
+    BLayoutBuilder::Menu<>(toolsMenu)
+        .AddItem(B_TRANSLATE("Word register"), _CreateToolMessage(TOOL_WORD_REGISTER))
+        .AddItem(B_TRANSLATE("Dictionary"), _CreateToolMessage(TOOL_DICTIONARY))
+        .AddItem(B_TRANSLATE("Character pad"), _CreateToolMessage(TOOL_CHARACTER_PAD))
+        .AddItem(B_TRANSLATE("Handwriting"), _CreateToolMessage(TOOL_HAND_WRITING))
+        .AddItem(B_TRANSLATE("Configuration"), _CreateToolMessage(TOOL_CONFIG));
+
     fContextMenu->AddItem(toolsMenu);
-    
+
     BPopUpMenu *barMenu = new BPopUpMenu(B_TRANSLATE("Bar"), false);
     barMenu->SetRadioMode(false);
-    barMenu->AddItem(new BMenuItem(B_TRANSLATE("Horizontal"), 
-            new BMessage(IM_BAR_HORIZONTAL)));
-    barMenu->AddItem(new BMenuItem(B_TRANSLATE("Vertical"), 
-            new BMessage(IM_BAR_VERTICAL)));
-    barMenu->AddSeparatorItem();
-    barMenu->AddItem(new BMenuItem(B_TRANSLATE("Hide bar"), 
-            new BMessage(IM_BAR_HIDE_PERMANENT)));
-    fContextMenu->AddItem(new BMenuItem(barMenu, 
+    BLayoutBuilder::Menu<>(barMenu)
+        .AddItem(B_TRANSLATE("Horizontal"), new BMessage(IM_BAR_HORIZONTAL))
+        .AddItem(B_TRANSLATE("Vertical"), new BMessage(IM_BAR_VERTICAL))
+        .AddSeparator()
+        .AddItem(B_TRANSLATE("Hide bar"), new BMessage(IM_BAR_HIDE_PERMANENT));
+
+    fContextMenu->AddItem(new BMenuItem(barMenu,
             new BMessage(BAR_BAR_MENU)));
     fContextMenu->AddSeparatorItem();
     fContextMenu->AddItem(new BMenuItem(B_TRANSLATE("Show/hide tools"),
             new BMessage(IM_BAR_TOOLS_ICON_STATE)));
     //fContextMenu->AddItem(new BMenuItem("Reload", new BMessage(IM_RELOAD)));
     fContextMenu->AddSeparatorItem();
-    fContextMenu->AddItem(new BMenuItem(B_TRANSLATE("About Mozc"), 
+    fContextMenu->AddItem(new BMenuItem(B_TRANSLATE("About Mozc"),
                 _CreateToolMessage(TOOL_ABOUT)));
-    
+
     Run(); // start
     // Allows to obtain width and height of these menus.
     fModeMenu->DoLayout();
     fToolsMenu->DoLayout();
     fContextMenu->DoLayout();
-    
+
     _UpdateBarMenu();
 }
 
@@ -224,32 +210,32 @@ void MozcBar::_Init()
     BRect rect(0, 0, fIconSize - 1, fIconSize - 1);
     fDirectIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kDirectIcon, sizeof(kDirectIcon), 
+        kDirectIcon, sizeof(kDirectIcon),
         fDirectIcon.get());
     //fDirectIcon.reset(bitmap);
     fHiraganaIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kHiraganaIcon, sizeof(kHiraganaIcon), 
+        kHiraganaIcon, sizeof(kHiraganaIcon),
         fHiraganaIcon.get());
     fFullwidthKatakanaIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kFullwidthKatakanaIcon, sizeof(kFullwidthKatakanaIcon), 
+        kFullwidthKatakanaIcon, sizeof(kFullwidthKatakanaIcon),
         fFullwidthKatakanaIcon.get());
     fHalfwidthAsciiIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kHalfwidthAsciiIcon, sizeof(kHalfwidthAsciiIcon), 
+        kHalfwidthAsciiIcon, sizeof(kHalfwidthAsciiIcon),
         fHalfwidthAsciiIcon.get());
     fFullwidthAsciiIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kFullwidthAsciiIcon, sizeof(kFullwidthAsciiIcon), 
+        kFullwidthAsciiIcon, sizeof(kFullwidthAsciiIcon),
         fFullwidthAsciiIcon.get());
     fHalfwidthKatakanaIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kHalfwidthKatakanaIcon, sizeof(kHalfwidthKatakanaIcon), 
+        kHalfwidthKatakanaIcon, sizeof(kHalfwidthKatakanaIcon),
         fHalfwidthKatakanaIcon.get());
     fToolsIcon = std::unique_ptr<BBitmap>(new BBitmap(rect, 0, B_RGBA32));
     BIconUtils::GetVectorIcon(
-        kToolsIcon, sizeof(kToolsIcon), 
+        kToolsIcon, sizeof(kToolsIcon),
         fToolsIcon.get());
 }
 
@@ -257,14 +243,14 @@ void MozcBar::_ChangeOrientation(orientation ort)
 {
     if (ort != fOrientation) {
         fOrientation = ort;
-        SetLook(fOrientation == B_HORIZONTAL ? 
+        SetLook(fOrientation == B_HORIZONTAL ?
                 kLeftTitledWindowLook : B_FLOATING_WINDOW_LOOK);
         BGroupLayout *layout = dynamic_cast<BGroupLayout *>(GetLayout());
         if (layout != NULL) {
             layout->SetOrientation(fOrientation);
         }
         _UpdateBarMenu();
-        
+
         // store bar orientation
         BMessage msg(IM_BAR_ORIENTATION_CHANGED);
         msg.AddBool("vertical", fOrientation == B_VERTICAL);
@@ -282,7 +268,7 @@ void MozcBar::_UpdateBarMenu()
             if (item != NULL) {
                 item->SetMarked(false);
             }
-            item = subMenu->FindItem(fOrientation == B_HORIZONTAL ? 
+            item = subMenu->FindItem(fOrientation == B_HORIZONTAL ?
                                     IM_BAR_HORIZONTAL : IM_BAR_VERTICAL);
             if (item != NULL) {
                 item->SetMarked(true);
@@ -298,7 +284,7 @@ void MozcBar::_ModeChanged(IM_Mode mode)
     if (icon != NULL) {
         fModeButton->SetIcon(icon);
     }
-    
+
     // Update selected item in the mode menu.
     BMenuItem *item = NULL;
     while (true) {
@@ -355,11 +341,11 @@ void MozcBar::FrameMoved(BPoint pos)
     BMessage msg(IM_BAR_MOVED);
     msg.AddPoint("pos", pos);
     fLooper->PostMessage(&msg);
-    
+
     BWindow::FrameMoved(pos);
 }
 
-bool MozcBar::_GetMenuPosition(const char *name, 
+bool MozcBar::_GetMenuPosition(const char *name,
                                 BPopUpMenu *menu, BPoint *where)
 {
     bool status = false;
@@ -501,7 +487,7 @@ void MozcBar::MessageReceived(BMessage *msg)
         {
             bool hidden;
             bool swch = msg->FindBool("hidden", &hidden) != B_OK;
-            
+
             BLayout *layout = GetLayout();
             if (layout != NULL) {
                 for (int i = layout->CountItems()-1; i >= 0; --i) {

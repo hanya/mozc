@@ -94,7 +94,7 @@ struct Settings
     //bool direct_input_use;
     int32 kana_mapping;
     bool changed;
-    
+
     Settings()
     {
         bar_x = 50;
@@ -106,9 +106,9 @@ struct Settings
         //direct_input_use = false;
         kana_mapping = KANA_MAPPING_JP;
         changed = false;
-        
+
     }
-    
+
     void SetPosition(int32 x, int32 y)
     {
         this->bar_x = x;
@@ -155,7 +155,7 @@ void MozcLooper::_WriteSettings()
             msg.AddBool(VAR_BAR_TOOLS_HIDDEN, fSettings->bar_tools_hidden);
             //msg.AddBool(VAR_DIRECT_INPUT_USE, fSettings->direct_input_use);
             msg.AddInt32(VAR_KANA_MAPPING, fSettings->kana_mapping);
-            
+
             msg.Flatten(&f);
         }
     }
@@ -192,15 +192,15 @@ MozcLooper::MozcLooper(MozcMethod *method)
     fMessenger = std::unique_ptr<BMessenger>(new BMessenger(NULL, this));
     fSettings = std::unique_ptr<Settings>(new Settings());
     _LoadSettings();
-    
+
     fSettingsWindow = NULL;
 
     fEngine = std::unique_ptr<MozcEngine>(new MozcEngine());
-    
-    fBar = std::unique_ptr<MozcBar>(new MozcBar(this, 
-            fSettings->bar_vertical ? B_VERTICAL : B_HORIZONTAL, 
+
+    fBar = std::unique_ptr<MozcBar>(new MozcBar(this,
+            fSettings->bar_vertical ? B_VERTICAL : B_HORIZONTAL,
             static_cast<float>(fSettings->bar_icon_size)));
-    fBar->MoveTo(static_cast<float>(fSettings->bar_x), 
+    fBar->MoveTo(static_cast<float>(fSettings->bar_x),
                  static_cast<float>(fSettings->bar_y));
     if (fSettings->bar_hidden) {
         BMessage mess(IM_BAR_HIDE_PERMANENT);
@@ -211,52 +211,52 @@ MozcLooper::MozcLooper(MozcMethod *method)
         mess.AddBool("hidden", true);
         fBar->PostMessage(&mess);
     }
-    
+
     // There is no way to obtain location to be input now.
     //fIndicator = std::unique_ptr<Indicator>(new Indicator(this, "Mozc"));
-    
+
     fCandidateWindow = std::unique_ptr<CandidateWindow>(
                               new CandidateWindow(this));
     // Create menu which is shown on the desckbar icon.
     fDeskbarMenu = std::unique_ptr<BMenu>(new BMenu("Menu"));
-    
+
     BLayoutBuilder::Menu<>(fDeskbarMenu.get())
-        .AddItem(new BMenuItem(B_TRANSLATE("Hiragana"),
-            _CreateModeMessage(MODE_HIRAGANA)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Katakana"),
-            _CreateModeMessage(MODE_FULLWIDTH_KATAKANA)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Alphabet"),
-            _CreateModeMessage(MODE_HALFWIDTH_ASCII)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Fullwidth Alphabet"),
-            _CreateModeMessage(MODE_FULLWIDTH_ASCII)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Halfwidth Katakana"),
-            _CreateModeMessage(MODE_HALFWIDTH_KATAKANA)))
+        .AddItem(B_TRANSLATE("Hiragana"),
+            _CreateModeMessage(MODE_HIRAGANA))
+        .AddItem(B_TRANSLATE("Fullwidth Katakana"),
+            _CreateModeMessage(MODE_FULLWIDTH_KATAKANA))
+        .AddItem(B_TRANSLATE("Halfwidth Alphabet"),
+            _CreateModeMessage(MODE_HALFWIDTH_ASCII))
+        .AddItem(B_TRANSLATE("Fullwidth Alphabet"),
+            _CreateModeMessage(MODE_FULLWIDTH_ASCII))
+        .AddItem(B_TRANSLATE("Halfwidth Katakana"),
+            _CreateModeMessage(MODE_HALFWIDTH_KATAKANA))
         .AddSeparator()
 
-        .AddItem(new BMenuItem(B_TRANSLATE("Word register"),
-            _CreateToolMessage(TOOL_WORD_REGISTER)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Dictionary"),
-            _CreateToolMessage(TOOL_DICTIONARY)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Character pad"),
-            _CreateToolMessage(TOOL_CHARACTER_PAD)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Handwriting"),
-            _CreateToolMessage(TOOL_HAND_WRITING)))
-        .AddItem(new BMenuItem(B_TRANSLATE("Configuration"),
-            _CreateToolMessage(TOOL_CONFIG)))
+        .AddItem(B_TRANSLATE("Word register"),
+            _CreateToolMessage(TOOL_WORD_REGISTER))
+        .AddItem(B_TRANSLATE("Dictionary"),
+            _CreateToolMessage(TOOL_DICTIONARY))
+        .AddItem(B_TRANSLATE("Character pad"),
+            _CreateToolMessage(TOOL_CHARACTER_PAD))
+        .AddItem(B_TRANSLATE("Handwriting"),
+            _CreateToolMessage(TOOL_HAND_WRITING))
+        .AddItem(B_TRANSLATE("Configuration"),
+            _CreateToolMessage(TOOL_CONFIG))
         .AddSeparator()
 
-        .AddItem(new BMenuItem(B_TRANSLATE("Setting..."),
-            new BMessage(SettingsWindow::IM_SETTINGS_WINDOW)))
+        .AddItem(B_TRANSLATE("Setting..."),
+            new BMessage(SettingsWindow::IM_SETTINGS_WINDOW))
         .AddSeparator()
 
-        .AddItem(new BMenuItem(B_TRANSLATE("Show bar"),
-            new BMessage(IM_BAR_SHOW_PERMANENT)))
+        .AddItem(B_TRANSLATE("Show bar"),
+            new BMessage(IM_BAR_SHOW_PERMANENT))
         .AddSeparator()
-    //  .AddItem(new BMenuItem("Mozc direct input",
-    //        new BMessage(MOZC_DIRECT_INPUT)))
-        .AddItem(new BMenuItem(B_TRANSLATE("About Mozc"),
-            _CreateToolMessage(TOOL_ABOUT)));
-    
+    //  .AddItem("Mozc direct input",
+    //        new BMessage(MOZC_DIRECT_INPUT))
+        .AddItem(B_TRANSLATE("About Mozc"),
+            _CreateToolMessage(TOOL_ABOUT));
+
     Run();
 }
 
@@ -305,9 +305,9 @@ void MozcLooper::_SendLog(const char *s)
 
 void MozcLooper::Quit()
 {
-    // Quit method is called in the destructor of the input_method but 
-    // this method is not called while shutdown. 
-	// In general, input_server does not closed while PC is ON. 
+    // Quit method is called in the destructor of the input_method but
+    // this method is not called while shutdown.
+	// In general, input_server does not closed while PC is ON.
     // So we have to store or sync settings in other place too.
     if (fSettingsWindow) {
         BMessage msg(B_QUIT_REQUESTED);
@@ -332,7 +332,7 @@ status_t MozcLooper::InitCheck()
 {
     // tells initial mode to the bar
     _HandleModeChange(fCurrentMode, true);
-    
+
     return B_OK;
 }
 
@@ -379,7 +379,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
                     }
                     break;
                 case B_INPUT_METHOD_STOPPED:
-                    // Canceled by some external action, 
+                    // Canceled by some external action,
                     // send ESC event to the engine.
                     fEngine->Revert();
                     fMethodStarted = false;
@@ -454,7 +454,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
 #if DEBUG
             _SendLog("Mozc.tool request");
 #endif
-            // If the message is came from the deskbar menu, the menu can not 
+            // If the message is came from the deskbar menu, the menu can not
             // sent any message again, bug? So, set it again.
             bool deskbar = msg->GetBool(DESKBAR, false);
             if (deskbar) {
@@ -475,7 +475,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
             // disable always hidden mode and show bar
             BMessage mess(IM_BAR_SHOW_PERMANENT);
             fBar->PostMessage(&mess);
-            
+
             if (fSettings->bar_hidden) {
                 fSettings->bar_hidden = false;
                 fSettings->changed = true;
@@ -621,7 +621,7 @@ void MozcLooper::_HandleMethodActivated(bool active)
 {
     if (active) {
         // Just make Mozc active
-        std::unique_ptr<mozc::commands::Output> output = 
+        std::unique_ptr<mozc::commands::Output> output =
                 std::unique_ptr<mozc::commands::Output>(
                         new mozc::commands::Output());
         if (fEngine->TurnOn(output.get())) {
@@ -629,11 +629,11 @@ void MozcLooper::_HandleMethodActivated(bool active)
             fEngine->UpdatePreeditMethod();
         }
         _ModeChanged();
-        
+
         // show the bar
         BMessage message(IM_BAR_SHOW);
         fBar->PostMessage(&message);
-        
+
         // Show indicator
         /*
         _SendMethodStarted();
@@ -647,7 +647,7 @@ void MozcLooper::_HandleMethodActivated(bool active)
         // maybe deactivated already by key down, so check it
         if (fMozcActive) {
             // Deactivate Mozc
-            std::unique_ptr<mozc::commands::Output> output = 
+            std::unique_ptr<mozc::commands::Output> output =
                     std::unique_ptr<mozc::commands::Output>(
                             new mozc::commands::Output());
             if (fEngine->TurnOff(output.get())) {
@@ -655,13 +655,13 @@ void MozcLooper::_HandleMethodActivated(bool active)
             }
         }
         _ModeChanged();
-        
+
         if (fOwner != NULL) {
             fOwner->SetMenu(NULL, *fMessenger);
         }
         // todo, option to make the bar always visible and show state like direct
         // hide bar if not shown while direct input by the configuration
-        
+
         // Hide bar if the bar is not in show always mode.
         BMessage message(IM_BAR_HIDE);
         fBar->PostMessage(&message);
@@ -751,11 +751,11 @@ void MozcLooper::_HandleKeyDown(BMessage *msg)
     // Eisu and CapsLock are not passed to input_method, so we can not use them.
 #if DEBUG
     char s[64];
-    sprintf(s, "keydown, key: 0x%x, mod: 0x%x, byte: 0x%x", 
+    sprintf(s, "keydown, key: 0x%x, mod: 0x%x, byte: 0x%x",
             key, modifiers, (char)byte);
     _SendLog((const char*)s);
 #endif
-    std::unique_ptr<mozc::commands::Output> output = 
+    std::unique_ptr<mozc::commands::Output> output =
         std::unique_ptr<mozc::commands::Output>(new mozc::commands::Output());
     if (fEngine->SendKey(byte, key, modifiers, output.get())) {
         // todo, check error_code here?
@@ -778,7 +778,7 @@ void MozcLooper::_HandleKeyDown(BMessage *msg)
         }
 #endif
         // Remove custom keys on direct mode. They input invalid character.
-        if (fCurrentMode == MODE_DIRECT && 
+        if (fCurrentMode == MODE_DIRECT &&
             (byte == K_MUHENKAN || byte == K_HENKAN)) {
             return;
         }
@@ -786,7 +786,7 @@ void MozcLooper::_HandleKeyDown(BMessage *msg)
         // Send keydown message to the input server
         EnqueueMessage(DetachCurrentMessage());
     } else {
-        // Failed to send key to the server, it might be the server is not 
+        // Failed to send key to the server, it might be the server is not
         // started. Check the path to the server.
 #if DEBUG
         _SendLog("Mozc.keydown sendkey failed");
@@ -808,7 +808,7 @@ void MozcLooper::_HandleOutput(std::unique_ptr<mozc::commands::Output> output)
 #endif
         }
     }
-    // If we have both result and preedit at the same time, 
+    // If we have both result and preedit at the same time,
     // confirm the current result first and then restart the preedit.
     if (output->has_result()) {
         _HandleResult(*output);
@@ -828,7 +828,7 @@ void MozcLooper::_HandleOutput(std::unique_ptr<mozc::commands::Output> output)
         msg->AddInt32("be:opcode", B_INPUT_METHOD_CHANGED);
         msg->AddString("be:string", "");
         EnqueueMessage(msg);
-        
+
         _SendMethodStopped();
         _HandleInputMethodStopped();
     }
@@ -839,7 +839,7 @@ void MozcLooper::_HandleOutput(std::unique_ptr<mozc::commands::Output> output)
     if (output->has_launch_tool_mode()) {
         _HandleLaunchToolMode(output->launch_tool_mode());
     }
-    
+
     if (show_candidate_window) {
         fCandidateWindow->SetData(std::move(output));
 #if DEBUG
@@ -864,7 +864,7 @@ bool MozcLooper::_HandleStatus(const mozc::commands::Output &output)
             _SendLog((const char*)s);
             if (output.status().has_mode() && output.status().has_comeback_mode()) {
                 char s2[64];
-                sprintf(s2, "mode: %d, comeback_mode: %d", 
+                sprintf(s2, "mode: %d, comeback_mode: %d",
                     output.status().mode(), output.status().comeback_mode());
                 _SendLog((const char*)s2);
             }
@@ -889,11 +889,11 @@ bool MozcLooper::_HandleStatus(const mozc::commands::Output &output)
 
 void MozcLooper::_HandleResult(const mozc::commands::Output &output)
 {
-    if (!output.has_result() || 
+    if (!output.has_result() ||
          output.result().type() == mozc::commands::Result::NONE) {
         return;
     }
-    // If input method is not started yet but the result is generated. 
+    // If input method is not started yet but the result is generated.
     // We have to start input method to make the string inserted correctly.
     if (!fMethodStarted) {
         _SendMethodStarted();
@@ -914,7 +914,7 @@ void MozcLooper::_HandleResult(const mozc::commands::Output &output)
     }
 #endif
     EnqueueMessage(msg);
-    
+
     // Preedit should be closed.
     _SendMethodStopped();
     _HandleInputMethodStopped();
@@ -934,19 +934,19 @@ bool MozcLooper::_HandlePreedit(const mozc::commands::Output &output)
         _SendLog("preedit activated");
 #endif
     }
-    // The candidate window should know character index of 
+    // The candidate window should know character index of
     // the highlighted segment.
     uint32 highlighted_index = 0;
-    
+
     BMessage *msg = new BMessage(B_INPUT_METHOD_EVENT);
     msg->AddInt32("be:opcode", B_INPUT_METHOD_CHANGED);
-    
+
     std::string text;
-    
+
     uint32 byte_pos = 0;
     uint32 pos = 0;
     for (int i = 0; i < output.preedit().segment_size(); ++i) {
-        const mozc::commands::Preedit_Segment &segment = 
+        const mozc::commands::Preedit_Segment &segment =
                             output.preedit().segment(i);
         text.append(segment.value());
         msg->AddInt32("be:clause_start", pos);
@@ -955,14 +955,14 @@ bool MozcLooper::_HandlePreedit(const mozc::commands::Output &output)
         byte_pos += segment.value().length();
         if (segment.annotation() == mozc::commands::Preedit::Segment::HIGHLIGHT) {
             // byte position
-            msg->AddInt32("be:selection", 
+            msg->AddInt32("be:selection",
                     byte_pos - segment.value().length()); // start
             msg->AddInt32("be:selection", byte_pos); // end
             // character position
             highlighted_index = pos - segment.value_length();
 #if DEBUG
             char s[64];
-            sprintf(s, "preedit selected: %s, start: %d, end: %d", 
+            sprintf(s, "preedit selected: %s, start: %d, end: %d",
                         segment.value().c_str(), pos - segment.value_length(), pos);
             _SendLog((const char*)s);
 #endif
@@ -975,17 +975,17 @@ bool MozcLooper::_HandlePreedit(const mozc::commands::Output &output)
     _SendLog(text.c_str());
 #endif
     EnqueueMessage(msg);
-    
+
     // send highlighted index to the candidate window
     BMessage mess(CANDIDATE_WINDOW_CURSOR_INDEX);
-    mess.AddInt32(CANDIDATE_WINDOW_CURSOR_NAME, 
+    mess.AddInt32(CANDIDATE_WINDOW_CURSOR_NAME,
                   static_cast<int32>(highlighted_index));
     fCandidateWindow->PostMessage(&mess);
-    
+
     return preedit_activated;
 }
 
-void MozcLooper::_HandleCandidates(const mozc::commands::Output &output, 
+void MozcLooper::_HandleCandidates(const mozc::commands::Output &output,
                                    bool newly_activated)
 {
     // update candidate window and show result
@@ -1006,12 +1006,12 @@ void MozcLooper::_HandleCandidates(const mozc::commands::Output &output,
 #endif
         }
     }
-    // If the candidate window is requested first time or position to 
+    // If the candidate window is requested first time or position to
 	// show the window is changed.
     uint32 position = output.preedit().highlighted_position();
     if (newly_activated || position != fHighlightedPosition) {
         fHighlightedPosition = position;
-        // To obtain the position where the window should be shown. 
+        // To obtain the position where the window should be shown.
         _SendMethodLocationRequest();
     }
 }
@@ -1025,7 +1025,7 @@ void MozcLooper::_HandleLocationRequest(BMessage *msg)
     // Multiple locations are contained for each characters in the preedit.
     // Send it to the candidate window.
     fCandidateWindow->PostMessage(msg);
-    
+
     // Show candidate window now.
     _ShowCandidateWindow();
 }
@@ -1053,13 +1053,13 @@ void MozcLooper::_HandleSelectCandidate(int32 id)
 #if DEBUG
     _SendLog("Mozc.select_candidate");
 #endif
-    std::unique_ptr<mozc::commands::Output> output = 
+    std::unique_ptr<mozc::commands::Output> output =
         std::unique_ptr<mozc::commands::Output>(new mozc::commands::Output());
     if (fEngine->SelectCandidate(id, output.get())) {
         if (output->has_consumed() && output->consumed()) {
 #if DEBUG
             char s[64];
-            sprintf(s, "Mozc.has_candidates: %d, has_result: %d", 
+            sprintf(s, "Mozc.has_candidates: %d, has_result: %d",
                         (int)output->has_candidates(),
                         (int)output->has_result());
             _SendLog((const char*)s);
@@ -1072,7 +1072,7 @@ void MozcLooper::_HandleSelectCandidate(int32 id)
 
 void MozcLooper::_HandleHighlightCandidate(int32 id)
 {
-    std::unique_ptr<mozc::commands::Output> output = 
+    std::unique_ptr<mozc::commands::Output> output =
         std::unique_ptr<mozc::commands::Output>(new mozc::commands::Output());
     if (fEngine->HighlightCandidate(id, output.get())) {
         if (output->has_consumed() && output->consumed()) {
