@@ -65,7 +65,7 @@ MozcMethod::~MozcMethod()
 
 status_t MozcMethod::InitCheck()
 {
-    status_t e;
+    status_t e = B_OK;
     MozcLooper *looper = new MozcLooper(this);
     if (looper->Lock()) {
         e = looper->InitCheck();
