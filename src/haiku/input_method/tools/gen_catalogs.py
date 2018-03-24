@@ -31,7 +31,7 @@ import sys
 import argparse
 import subprocess
 import os
-from os.path import basename, join, splitext
+from os.path import abspath, basename, join, splitext
 
 def exec_linkcatkeys(sig, out_path, input_paths):
     # 'linkcatkeys -o lang.catalog -s sig -l lang lang.catkeys'
@@ -64,7 +64,7 @@ def main():
     parser.add_argument('--outpath', 
                 help='rsrc file')
     args = parser.parse_args()
-    return exec_linkcatkeys(args.sig, args.outpath, args.inputpath)
+    return exec_linkcatkeys(args.sig, abspath(args.outpath), map(abspath, args.inputpath))
 
 if __name__ == '__main__':
     sys.exit(main())
