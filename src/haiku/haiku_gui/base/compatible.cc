@@ -627,7 +627,7 @@ void QListWidget::clear()
 void QListWidget::setCurrentRow(int32 n)
 {
     if (p_) {
-        p_->Select(n, 0);
+        p_->Select(n, 0, false);
     }
 }
 

@@ -122,8 +122,8 @@ void FindDialog::Find(FindDialog::Direction direction)
     int32 start_row = 0;
     int32 start_column = 0; // 0 or 1
     mpGridView->CursorIndex(&start_row, &start_column);
-    start_row = max(0, start_row);
-    start_column = std::max(0, std::min(start_column, 1));
+    start_row = max((int32)0, start_row);
+    start_column = std::max((int32)0, std::min(start_column, (int32)1));
     int32 matched_row = -1;
     int32 matched_column = -1;
 

@@ -519,7 +519,7 @@ void HandWritingCanvas::MessageReceived(BMessage* msg)
         }
         case HandWritingThread::STATUS_UPDATED:
         {
-            int status = 0;
+            int32 status = 0;
             if (msg->FindInt32("status", &status) == B_OK) {
                 if (handwriting::HANDWRITING_NO_ERROR <= status &&
                     status <= handwriting::HANDWRITING_UNKNOWN_ERROR) {

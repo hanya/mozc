@@ -466,7 +466,7 @@ void CharacterList::_DrawTable(BRect updateRect)
     const int32 nSelected = mnSelectedRow * mnColumnCount + mnSelectedColumn;
     const int32 nStartIndex = nStartRow * mnColumnCount;
     const int32 nEndIndex = std::min(nStartIndex +
-            (nEndRow - nStartRow + 1) * mnColumnCount, (int)maChars.size());
+            (nEndRow - nStartRow + 1) * mnColumnCount, (int32)maChars.size());
     for (int32 i = nStartIndex; i < nEndIndex; ++i) {
         const float width = StringWidth(maChars[i].c_str(), maChars[i].size());
         pos.x = x + halfWidth - width / 2;

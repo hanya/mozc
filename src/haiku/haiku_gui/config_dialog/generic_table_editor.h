@@ -263,7 +263,7 @@ bool GenericTableEditorDialog<T>::LoadFromString(const string &str) {
 
 template<typename T>
 void GenericTableEditorDialog<T>::DeleteSelectedItems() {
-  vector<int> rows = mutable_table_widget()->SelectedIndex();
+  vector<int32> rows = mutable_table_widget()->SelectedIndex();
 
   if (rows.empty()) {
     QMessageBox::warning(this,
