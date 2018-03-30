@@ -27,12 +27,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
+import stat
 import sys
 import argparse
 import subprocess
 import shutil
 
-def exec_xres(input_path, out_path, rsrc):
+def exec_xres(input_path, out_path, rsrc, make_executable=False):
     # copy 
     shutil.copyfile(input_path, out_path)
     
@@ -40,6 +42,9 @@ def exec_xres(input_path, out_path, rsrc):
     # 'xres -o out input.rsrc'
     args = ['xres', '-o', out_path, rsrc]
     p = subprocess.Popen(args, stderr=subprocess.PIPE)
+    if p.returncode is None and make_executable:
+        os.chmod(out_path,
+            os.stat(out_path).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
     return p.returncode
 
 def main():
@@ -51,8 +56,10 @@ def main():
                 help='input executable file')
     parser.add_argument('--rsrc',
                 help='rsrc file')
+    parser.add_argument('--exe', action='store_true', default=False,
+                help='set executable mode')
     args = parser.parse_args()
-    return exec_xres(args.inputpath, args.outpath, args.rsrc)
+    return exec_xres(args.inputpath, args.outpath, args.rsrc, args.exe)
 
 if __name__ == '__main__':
     sys.exit(main())
