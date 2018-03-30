@@ -1,0 +1,2 @@
+resource app_signature "application/x-vnd.Mozc-MozcTool";
+resource app_name_catalog_entry "Mozc-MozcTool:System name:mozc_tool";

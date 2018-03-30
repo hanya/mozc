@@ -1,0 +1,311 @@
+1	English	x-vnd.Mozc-MozcTool	70742812
+Numbers	config_dialog		Numbers
+Remove	dictionary_tool		Remove
+Source	character_pad		Source
+Dictionary name is too long.	dictionary_tool		Dictionary name is too long.
+Cannot find pattern %1	dictionary_tool		Cannot find pattern %1
+Rename dictionary...	dictionary_tool		Rename dictionary...
+Alphabets	config_dialog		Alphabets
+Dictionary	config_dialog		Dictionary
+The specified file is too large (>=100K byte)	config_dialog		The specified file is too large (>=100K byte)
+New entry	config_dialog		New entry
+Use input history	config_dialog		Use input history
+ConvertToHalfWidth	keymap		ConvertToHalfWidth
+ConvertToHalfAlphanumeric	keymap		ConvertToHalfAlphanumeric
+An invalid character is included in the dictionary name.	dictionary_tool		An invalid character is included in the dictionary name.
+Single kanji conversion	config_dialog		Single kanji conversion
+SegmentWidthExpand	keymap		SegmentWidthExpand
+No shortcut	config_dialog		No shortcut
+ConvertWithoutHistory	keymap		ConvertWithoutHistory
+Making dangerously large user dictionary file. If the dictionary file turns out to be larger than 256Mbyte, the dictionary loader skips to handle all the words to prevent the converter from being halted.	dictionary_tool		Making dangerously large user dictionary file. If the dictionary file turns out to be larger than 256Mbyte, the dictionary loader skips to handle all the words to prevent the converter from being halted.
+Command	config_dialog		Command
+Follow input mode	config_dialog		Follow input mode
+import from file	config_dialog		import from file
+Largest	character_pad		Largest
+Conversion	config_dialog		Conversion
+Postal code conversion	config_dialog		Postal code conversion
+ConvertNext	keymap		ConvertNext
+Tools	dictionary_tool		Tools
+Kana	config_dialog		Kana
+Privacy	config_dialog		Privacy
+Do you want to delete this word?	dictionary_tool		Do you want to delete this word?
+Revert	keymap		Revert
+DisplayAsHalfKatakana	keymap		DisplayAsHalfKatakana
+User Dictionary 1	dictionary_tool		User Dictionary 1
+Reading or Word:	dictionary_tool		Reading or Word:
+DisplayAsHiragana	keymap		DisplayAsHiragana
+New name of the dictionary	dictionary_tool		New name of the dictionary
+Remove entry	config_dialog		Remove entry
+Draw a character here	character_pad		Draw a character here
+New comment	dictionary_tool		New comment
+Updating the current view data...	dictionary_tool		Updating the current view data...
+ is sent to clipboard	character_pad		 is sent to clipboard
+Conversion engine is killed unexceptionally. Restarting the engine...	error_message_dialog		Conversion engine is killed unexceptionally. Restarting the engine...
+Rename...	dictionary_tool		Rename...
+Automatically switch to halfwidth	config_dialog		Automatically switch to halfwidth
+Input from numpad keys	config_dialog		Input from numpad keys
+MoveCursorToBeginning	keymap		MoveCursorToBeginning
+Delete	keymap		Delete
+Conversion	keymap		Conversion
+Cancel	word_register_dialog		Cancel
+Cannot move all the selected items.\nThe target dictionary can have maximum %1 entries.	dictionary_tool		Cannot move all the selected items.\nThe target dictionary can have maximum %1 entries.
+Emoji conversion	config_dialog		Emoji conversion
+Export this dictionary...	dictionary_tool		Export this dictionary...
+File Location	dictionary_tool		File Location
+Mozc key binding editor	config_dialog		Mozc key binding editor
+No	config_dialog		No
+Import as new dictionary...	dictionary_tool		Import as new dictionary...
+Suggestion	keymap		Suggestion
+%1: %2 entries	dictionary_tool		%1: %2 entries
+InputModeFullKatakana	keymap		InputModeFullKatakana
+Suggest	config_dialog		Suggest
+error	character_pad		error
+Word	dictionary_tool		Word
+Invalid key:\n%1	config_dialog		Invalid key:\n%1
+Export failed	config_dialog		Export failed
+Import	dictionary_tool		Import
+SegmentWidthShrink	keymap		SegmentWidthShrink
+Name of the new dictionary	dictionary_tool		Name of the new dictionary
+Edit user dictionary...	word_register_dialog		Edit user dictionary...
+Homonym dictionary	config_dialog		Homonym dictionary
+Undo	keymap		Undo
+Next input	config_dialog		Next input
+User dictionary	config_dialog		User dictionary
+Romaji	config_dialog		Romaji
+SegmentFocusLeft	keymap		SegmentFocusLeft
+Mozc	dictionary_tool		Mozc
+Shift JIS	dictionary_tool		Shift JIS
+%1 doesn't have enough space to import all words in the file. First %2 entries are imported.	dictionary_tool		%1 doesn't have enough space to import all words in the file. First %2 entries are imported.
+Katakana	config_dialog		Katakana
+Mozc keymap editor	config_dialog		Mozc keymap editor
+Personalization	config_dialog		Personalization
+IMEOff	keymap		IMEOff
+Output	config_dialog		Output
+1 -- 9	config_dialog		1 -- 9
+InputModeHalfAlphanumeric	keymap		InputModeHalfAlphanumeric
+Dictionary name is empty.	dictionary_tool		Dictionary name is empty.
+Prediction	keymap		Prediction
+Move the selected words to	dictionary_tool		Move the selected words to
+Delete the selected words	dictionary_tool		Delete the selected words
+DeleteSelectedCandidate	keymap		DeleteSelectedCandidate
+Mozc Romaji table editor	config_dialog		Mozc Romaji table editor
+Unicode	character_pad		Unicode
+ConvertToFullKatakana	keymap		ConvertToFullKatakana
+New dictionary...	dictionary_tool		New dictionary...
+Direct input	config_dialog		Direct input
+Apply	config_dialog		Apply
+%1 entries are imported to %2.\n\nSome imported words were not recognized by %3. Please check the original import file.	dictionary_tool		%1 entries are imported to %2.\n\nSome imported words were not recognized by %3. Please check the original import file.
+Mode	config_dialog		Mode
+Input Assistance	config_dialog		Input Assistance
+Input fields contain capital characters. \"Shift-mode-switch\" function is disabled with this new mapping.	config_dialog		Input fields contain capital characters. \"Shift-mode-switch\" function is disabled with this new mapping.
+Medium	character_pad		Medium
+IMEOn	keymap		IMEOn
+Reading	dictionary_tool		Reading
+UTF-8	dictionary_tool		UTF-8
+Google	dictionary_tool		Google
+Presentation mode	config_dialog		Presentation mode
+Kotoeri	dictionary_tool		Kotoeri
+ToggleAlphanumericMode	keymap		ToggleAlphanumericMode
+Import to this dictionary...	dictionary_tool		Import to this dictionary...
+InsertHalfSpace	keymap		InsertHalfSpace
+revert	character_pad		revert
+Fullwidth	config_dialog		Fullwidth
+Export current dictionary...	dictionary_tool		Export current dictionary...
+Larger	character_pad		Larger
+Alphanumeric	config_dialog		Alphanumeric
+Down	dictionary_tool		Down
+Smallest	character_pad		Smallest
+YES	compatible		YES
+Mozc settings	config_dialog		Mozc settings
+General	config_dialog		General
+Input	config_dialog		Input
+Custom keymap	config_dialog		Custom keymap
+User Dictionary 1	word_register_dialog		User Dictionary 1
+Do you want to clear all history data?	config_dialog		Do you want to clear all history data?
+SegmentFocusRight	keymap		SegmentFocusRight
+Change category to	dictionary_tool		Change category to
+Mozc Fatal Error	error_message_dialog		Mozc Fatal Error
+Punctuation style	config_dialog		Punctuation style
+Delete dictionary	dictionary_tool		Delete dictionary
+Kun Reading	character_pad		Kun Reading
+Word part contains invalid characters.	word_register_dialog		Word part contains invalid characters.
+Current keymap table is empty. You might want to import a pre-defined keymap table first.	config_dialog		Current keymap table is empty. You might want to import a pre-defined keymap table first.
+ConvertPrevPage	keymap		ConvertPrevPage
+Smaller	character_pad		Smaller
+DisplayAsHalfAlphanumeric	keymap		DisplayAsHalfAlphanumeric
+ConvertPrev	keymap		ConvertPrev
+Group	config_dialog		Group
+Up	dictionary_tool		Up
+Do you want to delete %1?	dictionary_tool		Do you want to delete %1?
+Cannot start candidate window renderer. Please restart your computer.	error_message_dialog		Cannot start candidate window renderer. Please restart your computer.
+NO	compatible		NO
+Do you want to clear personalization data? Input history is not reset with this operation. Please open \"suggestion\" tab to remove input history data.	config_dialog		Do you want to clear personalization data? Input history is not reset with this operation. Please open \"suggestion\" tab to remove input history data.
+Secret mode	config_dialog		Secret mode
+Composition	keymap		Composition
+Delete	dictionary_tool		Delete
+MoveCursorRight	keymap		MoveCursorRight
+Emoticon conversion	config_dialog		Emoticon conversion
+No dictionary is selected.	dictionary_tool		No dictionary is selected.
+Conversion engine is not responding. Please restart this application.	error_message_dialog		Conversion engine is not responding. Please restart this application.
+Precomposition	keymap		Precomposition
+Add	dictionary_tool		Add
+Find...	dictionary_tool		Find...
+ConvertNextPage	keymap		ConvertNextPage
+Do you want to clear unused history data?	config_dialog		Do you want to clear unused history data?
+Mozc [product information|https://github.com/google/mozc] [issues|https://github.com/google/mozc/issues]	about_dialog		Mozc [product information|https://github.com/google/mozc] [issues|https://github.com/google/mozc/issues]
+Encoding	dictionary_tool		Encoding
+Auto detection	dictionary_tool		Auto detection
+CommitFirstSuggestion	keymap		CommitFirstSuggestion
+DisplayAsHalfWidth	keymap		DisplayAsHalfWidth
+Source data	config_dialog		Source data
+Composition	config_dialog		Composition
+Adjust conversion based on previous input	config_dialog		Adjust conversion based on previous input
+Import to current dictionary...	dictionary_tool		Import to current dictionary...
+Mozc Settings	config_dialog		Mozc Settings
+Maximum number of suggestions	config_dialog		Maximum number of suggestions
+Mozc Word Register Dialog	word_register_dialog		Mozc Word Register Dialog
+Reconvert	keymap		Reconvert
+Keymap	config_dialog		Keymap
+DisplayAsFullKatakana	keymap		DisplayAsFullKatakana
+Candidate selection shortcut	config_dialog		Candidate selection shortcut
+Use realtime conversion	config_dialog		Use realtime conversion
+Remove selected entries	config_dialog		Remove selected entries
+File not found	config_dialog		File not found
+Temporarily disable conversion personalization, history-based suggestions and user dictionary	config_dialog		Temporarily disable conversion personalization, history-based suggestions and user dictionary
+clear	character_pad		clear
+LaunchConfigDialog	keymap		LaunchConfigDialog
+InsertSpace	keymap		InsertSpace
+Mozc	word_register_dialog		Mozc
+CancelAndIMEOff	keymap		CancelAndIMEOff
+Spelling correction	config_dialog		Spelling correction
+Cancel	keymap		Cancel
+Calculator	config_dialog		Calculator
+InputModeHiragana	keymap		InputModeHiragana
+Edit	config_dialog		Edit
+Delete this word	dictionary_tool		Delete this word
+Convert at punctuations	config_dialog		Convert at punctuations
+Use system dictionary	config_dialog		Use system dictionary
+Conversion engine has been upgraded. Please restart this application to enable conversion engine. If the problem persists, please restart your computer.	error_message_dialog		Conversion engine has been upgraded. Please restart this application to enable conversion engine. If the problem persists, please restart your computer.
+Word	word_register_dialog		Word
+Commit	keymap		Commit
+Dictionary export finished.	dictionary_tool		Dictionary export finished.
+Another process is accessing the user dictionary file.	dictionary_tool		Another process is accessing the user dictionary file.
+Backspace	keymap		Backspace
+MS-IME	config_dialog		MS-IME
+Mozc Converter is not running. Operation was not executed.	config_dialog		Mozc Converter is not running. Operation was not executed.
+ConvertToHiragana	keymap		ConvertToHiragana
+ConvertToFullAlphanumeric	keymap		ConvertToFullAlphanumeric
+Comment	dictionary_tool		Comment
+PredictAndConvert	keymap		PredictAndConvert
+Import from file...	config_dialog		Import from file...
+Category	dictionary_tool		Category
+MoveCursorToEnd	keymap		MoveCursorToEnd
+Dictionary already exists.	dictionary_tool		Dictionary already exists.
+Unexpected error occurs.	word_register_dialog		Unexpected error occurs.
+Can't open %1.	dictionary_tool		Can't open %1.
+LaunchWordRegisterDialog	keymap		LaunchWordRegisterDialog
+Candidate window renderer has been upgraded. Please restart this application to enable new candidate window renderer. If the problem persists, please restart your computer.	error_message_dialog		Candidate window renderer has been upgraded. Please restart this application to enable new candidate window renderer. If the problem persists, please restart your computer.
+Fullwidth/Halfwidth	config_dialog		Fullwidth/Halfwidth
+LaunchDictionaryTool	keymap		LaunchDictionaryTool
+InsertFullSpace	keymap		InsertFullSpace
+Convert	keymap		Convert
+Shift-JIS	character_pad		Shift-JIS
+Input mode	config_dialog		Input mode
+OK	config_dialog		OK
+Key	config_dialog		Key
+InputModeSwitchKanaType	keymap		InputModeSwitchKanaType
+Mozc Dictionary Tool	dictionary_tool		Mozc Dictionary Tool
+Romaji to Kana table is empty.	config_dialog		Romaji to Kana table is empty.
+Yes (don't record new data)	config_dialog		Yes (don't record new data)
+InputModeHalfKatakana	keymap		InputModeHalfKatakana
+About Mozc	about_dialog		About Mozc
+Format	dictionary_tool		Format
+Date/time conversion	config_dialog		Date/time conversion
+ConvertToHalfKatakana	keymap		ConvertToHalfKatakana
+Off	config_dialog		Off
+Special number conversion	config_dialog		Special number conversion
+Cancel	config_dialog		Cancel
+UTF-8	character_pad		UTF-8
+You can't have more than %1 entries	config_dialog		You can't have more than %1 entries
+Symbol style	config_dialog		Symbol style
+The current custom keymap table is empty. When custom keymap is selected, you must customize it.	config_dialog		The current custom keymap table is empty. When custom keymap is selected, you must customize it.
+Edit comment	dictionary_tool		Edit comment
+CommitOnlyFirstSegment	keymap		CommitOnlyFirstSegment
+Cancel	compatible		Cancel
+network error	character_pad		network error
+Reset to defaults	config_dialog		Reset to defaults
+OK	word_register_dialog		OK
+Kotoeri	config_dialog		Kotoeri
+Katakana to English conversion	config_dialog		Katakana to English conversion
+Yes	config_dialog		Yes
+Usage dictionary	config_dialog		Usage dictionary
+A fatal error occurred.	dictionary_tool		A fatal error occurred.
+DirectInput	keymap		DirectInput
+No entry is selected	config_dialog		No entry is selected
+Do you want to delete the selected words?	dictionary_tool		Do you want to delete the selected words?
+Basics	config_dialog		Basics
+Edit user dictionary...	config_dialog		Edit user dictionary...
+Changes of keymaps for direct input mode will apply only to applications that are launched after making your modifications.	config_dialog		Changes of keymaps for direct input mode will apply only to applications that are launched after making your modifications.
+SegmentFocusFirst	keymap		SegmentFocusFirst
+InsertAlternateSpace	keymap		InsertAlternateSpace
+Mozc Dictionary Find Dialog	dictionary_tool		Mozc Dictionary Find Dialog
+Importing new words...	dictionary_tool		Importing new words...
+Shift key mode switch	config_dialog		Shift key mode switch
+EUC-JP	character_pad		EUC-JP
+Failed to get current config values.	config_dialog		Failed to get current config values.
+Symbol conversion	config_dialog		Symbol conversion
+Failed to open user dictionary	dictionary_tool		Failed to open user dictionary
+Import failed	config_dialog		Import failed
+Dictionary Name	dictionary_tool		Dictionary Name
+Remember	config_dialog		Remember
+Keymap style	config_dialog		Keymap style
+Dictionary	word_register_dialog		Dictionary
+Failed to update config	config_dialog		Failed to update config
+Mozc Character Palette	character_pad		Mozc Character Palette
+Space input style	config_dialog		Space input style
+Temporarily disable all suggestions	config_dialog		Temporarily disable all suggestions
+%1 entries are imported to %2.	dictionary_tool		%1 entries are imported to %2.
+MoveCursorLeft	keymap		MoveCursorLeft
+InputModeFullAlphanumeric	keymap		InputModeFullAlphanumeric
+You can't have more than %1 words in one dictionary.	dictionary_tool		You can't have more than %1 words in one dictionary.
+You have imported a file in an invalid or unsupported file format.\n\nPlease check the file format. ATOK11 or older format is not supported by Mozc.	dictionary_tool		You have imported a file in an invalid or unsupported file format.\n\nPlease check the file format. ATOK11 or older format is not supported by Mozc.
+Add a word	dictionary_tool		Add a word
+unknown error	character_pad		unknown error
+Part of Speech	word_register_dialog		Part of Speech
+Mozc Converter is not running. Settings were not saved.	config_dialog		Mozc Converter is not running. Settings were not saved.
+ATOK	dictionary_tool		ATOK
+Microsoft IME	dictionary_tool		Microsoft IME
+Moving the selected words...	dictionary_tool		Moving the selected words...
+Reading	word_register_dialog		Reading
+Halfwidth	config_dialog		Halfwidth
+SegmentFocusLast	keymap		SegmentFocusLast
+Clear all history	config_dialog		Clear all history
+Mozc is made possible by [open source software|file://credits_en.html]	about_dialog		Mozc is made possible by [open source software|file://credits_en.html]
+Special conversions	config_dialog		Special conversions
+You can't have more than %1 dictionaries.	dictionary_tool		You can't have more than %1 dictionaries.
+Mozc Hand Writing	character_pad		Mozc Hand Writing
+On Reading	character_pad		On Reading
+Reading part contains invalid characters.	word_register_dialog		Reading part contains invalid characters.
+When you reset Mozc settings, any changes you've made will be reverted to the default settings. Do you want to reset settings? The following items are not reset with this operation.\n - Personalization data\n - Input history\n - Usage statistics and crash reports\n - Administrator settings	config_dialog		When you reset Mozc settings, any changes you've made will be reverted to the default settings. Do you want to reset settings? The following items are not reset with this operation.\n - Personalization data\n - Input history\n - Usage statistics and crash reports\n - Administrator settings
+A -- L	config_dialog		A -- L
+export to file	config_dialog		export to file
+SwitchKanaType	keymap		SwitchKanaType
+Unicode	dictionary_tool		Unicode
+Import predefined mapping	config_dialog		Import predefined mapping
+Clear personalization data	config_dialog		Clear personalization data
+Advanced	config_dialog		Advanced
+DisplayAsFullAlphanumeric	keymap		DisplayAsFullAlphanumeric
+Select file...	dictionary_tool		Select file...
+Romaji table	config_dialog		Romaji table
+Failed to update user dictionary.	word_register_dialog		Failed to update user dictionary.
+Connecting to an incompatible conversion engine. Please restart your computer to enable Mozc. If this problem persists, please uninstall Mozc and install it again.	error_message_dialog		Connecting to an incompatible conversion engine. Please restart your computer to enable Mozc. If this problem persists, please uninstall Mozc and install it again.
+Deleting the selected words...	dictionary_tool		Deleting the selected words...
+Cancel	dictionary_tool		Cancel
+Export to file...	config_dialog		Export to file...
+ATOK	config_dialog		ATOK
+OK	compatible		OK
+Move this word to	dictionary_tool		Move this word to
+Clear unused history	config_dialog		Clear unused history
+Cannot start conversion engine. Please restart your computer.	error_message_dialog		Cannot start conversion engine. Please restart your computer.
+Input key assignments:	config_dialog		Input key assignments:
+Close dictionary tool before using word register dialog.	word_register_dialog		Close dictionary tool before using word register dialog.
