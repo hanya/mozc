@@ -63,8 +63,6 @@
 
 namespace immozc {
 
-#define DESKBAR    "deskbar"
-
 #define MOZC_DIRECT_INPUT 'Mcdi'
 
 // 5 min?
@@ -168,10 +166,14 @@ std::string MozcLooper::_GetSettingsPath()
     return mozc::FileUtil::JoinPath(dir_path, SETTINGS_FILE_NAME);
 }
 
-
+#ifndef X86_GCC2
 MozcLooper::MozcLooper(MozcMethod *method)
     : BLooper("MozcLooper"),
       fOwner(method),
+#else // X86_GCC2
+MozcLooper::MozcLooper()
+    : BLooper("MozcLooper"),
+#endif // X86_GCC2
       fCurrentMode(MODE_HIRAGANA),
       fHighlightedPosition(0),
       fCategory(0),
@@ -179,12 +181,14 @@ MozcLooper::MozcLooper(MozcMethod *method)
       fMethodStarted(false),
       fLastSync(system_time())
 {
+#ifndef X86_GCC2
     if (be_app) {
         if (be_app->Lock()) {
             be_app->AddHandler(this);
             be_app->Unlock();
         }
     }
+#endif // X86_GCC2
 #if DEBUG
     fLogger = std::unique_ptr<BMessenger>(new BMessenger(LOGGER));
     _SendLog("MozcLooper.ctor");
@@ -217,76 +221,23 @@ MozcLooper::MozcLooper(MozcMethod *method)
 
     fCandidateWindow = std::unique_ptr<CandidateWindow>(
                               new CandidateWindow(this));
-    // Create menu which is shown on the desckbar icon.
-    fDeskbarMenu = std::unique_ptr<BMenu>(new BMenu("Menu"));
-
-    BLayoutBuilder::Menu<>(fDeskbarMenu.get())
-        .AddItem(B_TRANSLATE("Hiragana"),
-            _CreateModeMessage(MODE_HIRAGANA))
-        .AddItem(B_TRANSLATE("Fullwidth Katakana"),
-            _CreateModeMessage(MODE_FULLWIDTH_KATAKANA))
-        .AddItem(B_TRANSLATE("Halfwidth Alphabet"),
-            _CreateModeMessage(MODE_HALFWIDTH_ASCII))
-        .AddItem(B_TRANSLATE("Fullwidth Alphabet"),
-            _CreateModeMessage(MODE_FULLWIDTH_ASCII))
-        .AddItem(B_TRANSLATE("Halfwidth Katakana"),
-            _CreateModeMessage(MODE_HALFWIDTH_KATAKANA))
-        .AddSeparator()
-
-        .AddItem(B_TRANSLATE("Word register"),
-            _CreateToolMessage(TOOL_WORD_REGISTER))
-        .AddItem(B_TRANSLATE("Dictionary"),
-            _CreateToolMessage(TOOL_DICTIONARY))
-        .AddItem(B_TRANSLATE("Character pad"),
-            _CreateToolMessage(TOOL_CHARACTER_PAD))
-        .AddItem(B_TRANSLATE("Handwriting"),
-            _CreateToolMessage(TOOL_HAND_WRITING))
-        .AddItem(B_TRANSLATE("Configuration"),
-            _CreateToolMessage(TOOL_CONFIG))
-        .AddSeparator()
-
-        .AddItem(B_TRANSLATE("Setting..."),
-            new BMessage(SettingsWindow::IM_SETTINGS_WINDOW))
-        .AddSeparator()
-
-        .AddItem(B_TRANSLATE("Show bar"),
-            new BMessage(IM_BAR_SHOW_PERMANENT))
-        .AddSeparator()
-    //  .AddItem("Mozc direct input",
-    //        new BMessage(MOZC_DIRECT_INPUT))
-        .AddItem(B_TRANSLATE("About Mozc"),
-            _CreateToolMessage(TOOL_ABOUT));
 
     Run();
 }
 
 MozcLooper::~MozcLooper()
 {
+#ifndef X86_GCC2
     if (be_app) {
         if (be_app->Lock()) {
             be_app->RemoveHandler(this);
             be_app->Unlock();
         }
     }
+#endif // X86_GCC2
 #if DEBUG
     _SendLog("MozcLooper.dector");
 #endif
-}
-
-BMessage *MozcLooper::_CreateToolMessage(Mozc_Tool tool) const
-{
-    BMessage *msg = new BMessage(IM_TOOL);
-    msg->AddInt32(MOZC_TOOL_TOOL, tool);
-    msg->AddBool(DESKBAR, true);
-    return msg;
-}
-
-BMessage *MozcLooper::_CreateModeMessage(IM_Mode mode) const
-{
-    BMessage *msg = new BMessage(IM_MODE_CHANGE_REQUEST);
-    msg->AddInt32(IM_MODE_MODE, mode);
-    msg->AddBool(DESKBAR, true);
-    return msg;
 }
 
 #if DEBUG
@@ -307,7 +258,7 @@ void MozcLooper::Quit()
 {
     // Quit method is called in the destructor of the input_method but
     // this method is not called while shutdown.
-	// In general, input_server does not closed while PC is ON.
+    // In general, input_server does not closed while PC is ON.
     // So we have to store or sync settings in other place too.
     if (fSettingsWindow) {
         BMessage msg(B_QUIT_REQUESTED);
@@ -316,9 +267,6 @@ void MozcLooper::Quit()
     fSettingsWindow = NULL;
     _WriteSettings();
     _SyncDataIfRequired(true);
-    if (fOwner != NULL) {
-        fOwner->SetMenu(NULL, BMessenger());
-    }
     if (fBar->Lock()) {
         fBar->Quit();
     }
@@ -347,16 +295,34 @@ void MozcLooper::_SyncDataIfRequired(bool force)
 
 void MozcLooper::_UpdateDeskbarMenu() const
 {
-    if (fOwner != NULL) {
-        fOwner->SetMenu(fDeskbarMenu.get(), *fMessenger);
+    // todo, send mode update request
+#ifndef X86_GCC2
+    if (fOwner) {
+#else //X86_GCC2
+    if (fMethod.IsValid()) {
+#endif // X86_GCC2
+        BMessage* message = new BMessage(IM_MODE_CHANGE_REQUEST);
+        message->AddInt32("mode", fCurrentMode);
+        message->AddMessenger("messenger", *fMessenger);
+#ifndef X86_GCC2
+        fOwner->MessageFromLooper(message);
+#else // X86_GCC2
+        fMethod.SendMessage(message);
+#endif // X86_GCC2
     }
 }
 
 void MozcLooper::EnqueueMessage(BMessage *msg)
 {
+#ifndef X86_GCC2
     if (fOwner != NULL) {
         fOwner->EnqueueMessage(msg);
     }
+#else // X86_GCC2
+    if (fMethod.IsValid()) {
+        fMethod.SendMessage(msg);
+    }
+#endif // X86_GCC2
 }
 
 void MozcLooper::MessageReceived(BMessage *msg)
@@ -433,7 +399,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_SELECT_CANDIDATE:
         {
-			// Select a candidate and then close the candidate window.
+            // Select a candidate and then close the candidate window.
             int32 id = 0;
             if (msg->FindInt32("id", &id) == B_OK) {
                 _HandleSelectCandidate(id);
@@ -442,7 +408,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_HIGHLIGHT_CANDIDATE:
         {
-			// Only highlight on the candidate window.
+            // Only highlight on the candidate window.
             int32 id = 0;
             if (msg->FindInt32("id", &id) == B_OK) {
                 _HandleHighlightCandidate(id);
@@ -485,7 +451,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_BAR_HIDE:
         {
-			// The bar was hidden by the user.
+            // The bar was hidden by the user.
             if (fSettings->bar_hidden) {
                 fSettings->bar_hidden = true;
                 fSettings->changed = true;
@@ -494,7 +460,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_BAR_MOVED:
         {
-			// The bar was moved by the user.
+            // The bar was moved by the user.
             BPoint pos;
             if (msg->FindPoint("pos", &pos) == B_OK) {
                 if (fSettings->bar_x != static_cast<int32>(pos.x) ||
@@ -507,7 +473,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_BAR_ORIENTATION_CHANGED:
         {
-			// Orientation of the bar was changed.
+            // Orientation of the bar was changed.
             bool vertical;
             if (msg->FindBool("vertical", &vertical) == B_OK) {
                 if (fSettings->bar_vertical != vertical) {
@@ -519,7 +485,7 @@ void MozcLooper::MessageReceived(BMessage *msg)
         }
         case IM_BAR_TOOLS_ICON_STATE:
         {
-			// Visibility of the tools icon on the bar was changed.
+            // Visibility of the tools icon on the bar was changed.
             bool hidden;
             if (msg->FindBool("hidden", &hidden) == B_OK) {
                 if (fSettings->bar_tools_hidden != hidden) {
@@ -561,6 +527,13 @@ void MozcLooper::MessageReceived(BMessage *msg)
             break;
         }
         */
+#ifdef X86_GCC2
+        case 'init':
+        {
+            msg->FindMessenger("method", &fMethod);
+            break;
+        }
+#endif // X86_GCC2
 #if DEBUG
         case LOG_COMMAND:
         {
@@ -593,9 +566,13 @@ void MozcLooper::_ShowSettingsWindow()
 
 void MozcLooper::_SwitchToDefaultMethod()
 {
-    BMessage msg(IS_SET_METHOD);
-    msg.AddInt32("cookie", 1); // see InputServerMethod.cpp
-    be_app->MessageReceived(&msg);
+    BMessage* message = new BMessage(IS_SET_METHOD);
+    message->AddInt32("cookie", 1); // see InputServerMethod.cpp
+#ifndef X86_GCC2
+    be_app->MessageReceived(message);
+#else // X86_GCC2
+    fMethod.SendMessage(message);
+#endif // X86_GCC2
 }
 
 void MozcLooper::_ShowCandidateWindow()
@@ -655,10 +632,11 @@ void MozcLooper::_HandleMethodActivated(bool active)
             }
         }
         _ModeChanged();
-
+#ifndef X86_GCC2
         if (fOwner != NULL) {
             fOwner->SetMenu(NULL, *fMessenger);
         }
+#endif // X86_GCC2
         // todo, option to make the bar always visible and show state like direct
         // hide bar if not shown while direct input by the configuration
 
@@ -694,27 +672,6 @@ void MozcLooper::_ModeChanged()
 #if DEBUG
     _SendLog("Mozc.mode changed and sent to bar");
 #endif
-    // remove selected and set to new one
-    BMenuItem *item = NULL;
-    item = fDeskbarMenu->FindMarked();
-    if (item != NULL) {
-        item->SetMarked(false);
-    }
-    for (int i = 0; i < fDeskbarMenu->CountItems(); ++i) {
-        item = fDeskbarMenu->ItemAt(i);
-        if (item != NULL) {
-            BMessage *m = item->Message();
-            if (m != NULL && m->what == IM_MODE_CHANGE_REQUEST) {
-                int32 mode;
-                if (m->FindInt32(IM_MODE_MODE, &mode) == B_OK) {
-                    if (mode == fCurrentMode) {
-                        item->SetMarked(true);
-                        break;
-                    }
-                }
-            }
-        }
-    }
     _UpdateDeskbarMenu();
     // set repricant icon
     // Repricant icon is not redrawn until method change. Not useful now.

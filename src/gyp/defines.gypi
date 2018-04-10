@@ -71,6 +71,9 @@
     # use_libibus represents if ibus library is used or not.
     # This option is only for Linux.
     'use_libibus%': '0',
+
+    # primary architecture is x86_gcc2 and build by gcc5 on Haiku OS
+    'target_x86_gcc2%': '0',
   },
   'target_defaults': {
     'defines': [

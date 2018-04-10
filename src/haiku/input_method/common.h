@@ -30,6 +30,8 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#define MOZC_BACKEND_SIG "application/x-vnd.Mozc-Task"
+
 namespace immozc {
 
 // Special keys defined by custom keymap.
@@ -74,7 +76,7 @@ enum {
     IM_KANA_MAPPING_MSG = 'IMkm',
 };
 
-
+#define DESKBAR         "deskbar"
 #define IM_ACTIVE       "active"
 #define IM_MODE_MODE    "mode"
 

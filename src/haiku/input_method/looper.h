@@ -54,24 +54,33 @@ class CandidateWindow;
 //class Indicator;
 class MozcBar;
 class MozcEngine;
+#ifndef X86_GCC2
 class MozcMethod;
+#endif // X86_GCC2
 struct Settings;
 class SettingsWindow;
 
 class MozcLooper : public BLooper
 {
 public:
+#ifndef X86_GCC2
                             MozcLooper(MozcMethod *method);
+#else // X86_GCC2
+                            MozcLooper();
+#endif // X86_GCC2
     virtual                 ~MozcLooper();
     virtual void            Quit();
     virtual void            MessageReceived(BMessage *msg);
     virtual void            EnqueueMessage(BMessage *msg);
             status_t        InitCheck();
-    
+
 private:
+#ifndef X86_GCC2
     MozcMethod *                         fOwner;
+#else // X86_GCC2
+    BMessenger                           fMethod;
+#endif // X86_GCC2
     std::unique_ptr<MozcEngine>          fEngine;
-    std::unique_ptr<BMenu>               fDeskbarMenu;
     //std::unique_ptr<Indicator>         fIndicator;
     std::unique_ptr<MozcBar>             fBar;
     std::unique_ptr<CandidateWindow>     fCandidateWindow;
@@ -88,11 +97,10 @@ private:
     bigtime_t                            fLastSync;
     std::unique_ptr<Settings>            fSettings;
     SettingsWindow*                      fSettingsWindow;
-    
+
     void _HandleKeyDown(BMessage *msg);
     void _HandleLocationRequest(BMessage *msg);
-    BMessage *   _CreateToolMessage(Mozc_Tool tool) const;
-    BMessage *   _CreateModeMessage(IM_Mode mode) const;
+
     void         _SendMethodStarted(void);
     void         _SendMethodStopped(void);
     void         _HandleMethodActivated(bool active);
@@ -120,7 +128,7 @@ private:
     std::string  _GetSettingsPath();
     //const uchar * _GetModeIcon(IM_Mode mode) const;
     void         _ShowSettingsWindow();
-    
+
 #if DEBUG
     std::unique_ptr<BMessenger>      fLogger;
     void                             _SendLog(const char *s);

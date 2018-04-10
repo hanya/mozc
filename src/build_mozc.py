@@ -175,7 +175,7 @@ def GetGypFileNames(options):
       gyp_file_names.remove('%s/unix/ibus/ibus.gyp' % SRC_DIR)
     if options.variant == 'Haiku':
       gyp_file_names.extend(glob.glob('%s/haiku/*/*.gyp' % SRC_DIR))
-      if options.noqt:
+      if hasattr(options, 'noqt') and options.noqt:
         gyp_file_names.remove('%s/gui/gui.gyp' % SRC_DIR)
   elif options.target_platform == 'NaCl':
     # Add chrome NaCl Mozc gyp scripts.

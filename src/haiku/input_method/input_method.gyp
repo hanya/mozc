@@ -53,25 +53,61 @@
         '../../protocol/protocol.gyp:commands_proto',
         '../../protocol/protocol.gyp:config_proto',
       ],
+      'conditions': [
+        ['target_x86_gcc2=="x86_gcc2"', {
+          'defines': [
+            'X86_GCC2',
+          ],
+        }]
+      ],
     },
     {
       'target_name': 'mozc_no_resource',
-      #'type': 'shared_library',
-      'type': 'executable',
-      'sources': [
-        'method.cc',
+      'conditions': [
+        ['target_x86_gcc2!="x86_gcc2"', {
+          'type': 'executable',
+          'sources': [
+            'method.cc',
+          ],
+          'dependencies': [
+            'input_method_lib',
+          ],
+          'link_settings': {
+            'libraries': [
+              '-lbe',
+              '-ltranslation',
+              '-llocalestub',
+              '/boot/system/servers/input_server',
+            ],
+          },
+        }, {
+          'type': 'executable',
+          'dependencies': [
+            'mozc_task',
+          ],
+          'actions': [
+            {
+              'action_name': 'mozc_no_resource_x86_gcc2',
+              'inputs': [
+                'method.cc',
+              ],
+              'outputs': [
+                '<(out_dir)/mozc_no_resource',
+              ],
+              'action': [
+                'python', 'tools/compile.py',
+                '--compiler', '/bin/g++',
+                '--inputpath', '<@(_inputs)',
+                '--outpath', '<@(_outputs)',
+                '--defs', 'X86_GCC2',
+                '--includes', './', '../..',
+                '--libs', 'be', 'localestub', '/system/servers/input_server'
+              ],
+              'message': 'Generating <@(_outputs)',
+            }
+          ],
+        }],
       ],
-      'dependencies': [
-        'input_method_lib',
-      ],
-      'link_settings': {
-        'libraries': [
-          '-lbe',
-          '-ltranslation',
-          '-llocalestub',
-          '/boot/system/servers/input_server',
-        ],
-      },
     },
     {
       'target_name': 'mozc',
@@ -96,6 +132,7 @@
             '--inputpath', '<@(_inputs)',
             '--rsrc', '<(gen_out_dir)/input_method.rsrc',
           ],
+          'message': 'Generating <@(_outputs)',
         },
       ],
     },
@@ -129,6 +166,7 @@
             './bar.cc',
             './looper.cc',
             './settings_window.cc',
+            './method.cc',
           ],
           'outputs': [
             '<(gen_out_dir)/input_method.pre',
@@ -197,5 +235,80 @@
       ],
     },
   ],
-  
+  'conditions': [
+    ['target_x86_gcc2=="x86_gcc2"', {
+      'targets': [
+        {
+          'target_name': 'mozc_task',
+          'type': 'none',
+          'dependencies': [
+            'mozc_task_no_resource',
+            'mozc_task_rsrc',
+            'catalogs',
+          ],
+          'actions': [
+            {
+              'action_name': 'task_merge_rsrc',
+              'inputs': [
+                '<(out_dir)/mozc_task_no_resource',
+              ],
+              'outputs': [
+                '<(out_dir)/mozc_task',
+              ],
+              'action': [
+                'python', 'tools/xres.py',
+                '--outpath', '<@(_outputs)',
+                '--inputpath', '<@(_inputs)',
+                '--rsrc', '<(gen_out_dir)/mozc_task.rsrc',
+                '--exe',
+              ]
+            }
+          ],
+        },
+        {
+          'target_name': 'mozc_task_no_resource',
+          'type': 'executable',
+          'sources': [
+            'task.cc',
+          ],
+          'dependencies': [
+            'input_method_lib',
+          ],
+          'link_settings': {
+            'libraries': [
+              '-lbe',
+              '-ltranslation',
+              '-llocalestub',
+            ]
+          },
+          'defines': [
+            'X86_GCC2',
+          ],
+        },
+        {
+          'target_name': 'mozc_task_rsrc',
+          'type': 'none',
+          'actions': [
+            {
+              'variables': {
+                'rdef': 'mozc_task',
+              },
+              'action_name': 'mozc_task_rdef_torsrc',
+              'inputs': [
+                './<@(rdef).rdef',
+              ],
+              'outputs': [
+                '<(gen_out_dir)/<@(rdef).rsrc',
+              ],
+              'action': [
+                'python', 'tools/rc.py',
+                '--outpath', '<@(_outputs)',
+                '<@(_inputs)',
+              ],
+            },
+          ],
+        }
+      ],
+    }],
+  ],
 }

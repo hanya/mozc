@@ -27,38 +27,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef MOZC_METHOD_H_
-#define MOZC_METHOD_H_
+#ifndef TASK_H
+#define TASK_H
 
+#include <Application.h>
 #include <Messenger.h>
-#include <SupportDefs.h>
-#include <add-ons/input_server/InputServerMethod.h>
-
-class BMenu;
-class BMessenger;
 
 namespace immozc {
 
-class MozcMethod : public BInputServerMethod
+// used only on gcc2_x86 environment
+
+class MozcTask : public BApplication
 {
 public:
-                           MozcMethod();
-    virtual                ~MozcMethod();
+    MozcTask();
+    virtual ~MozcTask();
 
-    virtual status_t       InitCheck();
-    virtual filter_result  Filter(BMessage *msg, BList *_list);
-    virtual status_t       MethodActivated(bool active);
-
-    void MessageFromLooper(BMessage* msg);
+    virtual void MessageReceived(BMessage* msg);
+    virtual bool QuitRequested();
 private:
-    BMessenger       fMozcLooper;
-    BMenu*           fDeskbarMenu;
-#ifdef X86_GCC2
-    BHandler  *fHandler;
-#endif // X86_GCC2
-    void _UpdateMenu(BMessage* msg);
+    BMessenger fMozcLooper;
 };
 
 } // namespace immozc
 
-#endif // MOZC_METHOD_H_
+#endif // TASK_H

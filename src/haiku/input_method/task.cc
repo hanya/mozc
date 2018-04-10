@@ -27,38 +27,78 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef MOZC_METHOD_H_
-#define MOZC_METHOD_H_
+#include "haiku/input_method/task.h"
+
+#include "haiku/input_method/common.h"
+#include "haiku/input_method/looper.h"
 
 #include <Messenger.h>
-#include <SupportDefs.h>
-#include <add-ons/input_server/InputServerMethod.h>
-
-class BMenu;
-class BMessenger;
 
 namespace immozc {
 
-class MozcMethod : public BInputServerMethod
+MozcTask::MozcTask()
+    : BApplication(MOZC_BACKEND_SIG)
 {
-public:
-                           MozcMethod();
-    virtual                ~MozcMethod();
+    MozcLooper* looper = new MozcLooper();
+    if (looper->Lock()) {
+        looper->InitCheck();
+        looper->Unlock();
+    }
+    fMozcLooper = BMessenger(NULL, looper);
+}
 
-    virtual status_t       InitCheck();
-    virtual filter_result  Filter(BMessage *msg, BList *_list);
-    virtual status_t       MethodActivated(bool active);
+MozcTask::~MozcTask()
+{
+    BLooper* looper = NULL;
+    fMozcLooper.Target(&looper);
+    if (looper != NULL) {
+        if (looper->Lock()) {
+            looper->Quit();
+        }
+        delete looper;
+    }
+}
 
-    void MessageFromLooper(BMessage* msg);
-private:
-    BMessenger       fMozcLooper;
-    BMenu*           fDeskbarMenu;
-#ifdef X86_GCC2
-    BHandler  *fHandler;
-#endif // X86_GCC2
-    void _UpdateMenu(BMessage* msg);
-};
+bool MozcTask::QuitRequested()
+{
+    BLooper* looper = NULL;
+    fMozcLooper.Target(&looper);
+    if (looper != NULL) {
+        if (looper->Lock()) {
+            looper->Quit();
+        }
+        delete looper;
+        fMozcLooper.SetTo((const BHandler*)NULL);
+    }
+    return true;
+}
+
+void MozcTask::MessageReceived(BMessage* msg)
+{
+    switch(msg->what) {
+        case B_KEY_DOWN:
+            fMozcLooper.SendMessage(msg);
+            break;
+        case IM_METHOD_ACTIVATED:
+            fMozcLooper.SendMessage(msg);
+            break;
+        case IM_METHOD_DEACTIVATED:
+            fMozcLooper.SendMessage(msg);
+            break;
+        case 'init':
+          fMozcLooper.SendMessage(msg);
+          break;
+        default:
+            BApplication::MessageReceived(msg);
+            break;
+    }
+}
 
 } // namespace immozc
 
-#endif // MOZC_METHOD_H_
+int main(int argc, char* argv[]) {
+    immozc::MozcTask *app = new immozc::MozcTask();
+    app->Run();
+    delete app;
+    return 0;
+}

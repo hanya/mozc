@@ -1,0 +1,3 @@
+resource app_signature "application/x-vnd.Mozc-Task";
+resource app_name_catalog_entry "Mozc-InputMethod:System name:mozc_task";
+resource app_flags B_EXCLUSIVE_LAUNCH | B_BACKGROUND_APP;
