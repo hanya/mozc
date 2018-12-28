@@ -906,12 +906,11 @@ bool MozcLooper::_HandlePreedit(const mozc::commands::Output &output)
         const mozc::commands::Preedit_Segment &segment =
                             output.preedit().segment(i);
         text.append(segment.value());
-        msg->AddInt32("be:clause_start", pos);
+        msg->AddInt32("be:clause_start", byte_pos);
         pos += segment.value_length();
-        msg->AddInt32("be:clause_end", pos);
         byte_pos += segment.value().length();
+        msg->AddInt32("be:clause_end", byte_pos);
         if (segment.annotation() == mozc::commands::Preedit::Segment::HIGHLIGHT) {
-            // byte position
             msg->AddInt32("be:selection",
                     byte_pos - segment.value().length()); // start
             msg->AddInt32("be:selection", byte_pos); // end
