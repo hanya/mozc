@@ -30,7 +30,7 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#define MOZC_BACKEND_SIG "application/x-vnd.Mozc-Task"
+#define MOZC_BACKEND_SIG "application/x-vnd.Mozc-InputMethod"
 
 namespace immozc {
 
