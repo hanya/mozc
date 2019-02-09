@@ -166,13 +166,13 @@ MozcMethod::~MozcMethod()
         if (looper->Lock()) {
             looper->Quit();
         }
-        delete looper;
     }
 #else
     fMozcLooper.SendMessage(B_QUIT_REQUESTED);
     delete fHandler;
     // todo, kill mozc_task
 #endif // X86_GCC2
+    delete fDeskbarMenu;
 }
 
 #ifdef X86_GCC2

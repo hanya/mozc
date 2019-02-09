@@ -55,7 +55,6 @@ MozcTask::~MozcTask()
         if (looper->Lock()) {
             looper->Quit();
         }
-        delete looper;
     }
 }
 
@@ -67,7 +66,6 @@ bool MozcTask::QuitRequested()
         if (looper->Lock()) {
             looper->Quit();
         }
-        delete looper;
         fMozcLooper.SetTo((const BHandler*)NULL);
     }
     return true;
