@@ -201,9 +201,9 @@ MozcLooper::MozcLooper()
 
     fEngine = std::unique_ptr<MozcEngine>(new MozcEngine());
 
-    fBar = std::unique_ptr<MozcBar>(new MozcBar(this,
+    fBar = new MozcBar(this,
             fSettings->bar_vertical ? B_VERTICAL : B_HORIZONTAL,
-            static_cast<float>(fSettings->bar_icon_size)));
+            static_cast<float>(fSettings->bar_icon_size));
     fBar->MoveTo(static_cast<float>(fSettings->bar_x),
                  static_cast<float>(fSettings->bar_y));
     if (fSettings->bar_hidden) {

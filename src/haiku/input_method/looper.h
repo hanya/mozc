@@ -82,7 +82,7 @@ private:
 #endif // X86_GCC2
     std::unique_ptr<MozcEngine>          fEngine;
     //std::unique_ptr<Indicator>         fIndicator;
-    std::unique_ptr<MozcBar>             fBar;
+    MozcBar*                             fBar;
     std::unique_ptr<CandidateWindow>     fCandidateWindow;
     std::unique_ptr<BMessenger>          fMessenger;
     // composition mode of Mozc
