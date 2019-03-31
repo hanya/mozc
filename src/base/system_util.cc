@@ -270,6 +270,17 @@ UserProfileDirectoryImpl::UserProfileDirectoryImpl() {
 #endif  // MOZC_USE_PEPPER_FILE_IO
 }
 
+#ifdef OS_HAIKU
+string GetUserNonPackagedDataDirectory() {
+  dev_t volume = dev_for_path("/boot");
+  char buffer[B_PATH_NAME_LENGTH + B_FILE_NAME_LENGTH];
+  if (find_directory(B_USER_NONPACKAGED_DATA_DIRECTORY, volume, false,
+                     buffer, sizeof(buffer)) == B_OK) {
+    return FileUtil::JoinPath((const char*)buffer, "mozc");
+  }
+  return "";
+}
+#endif
 }  // namespace
 
 string SystemUtil::GetUserProfileDirectory() {
@@ -395,6 +406,14 @@ string SystemUtil::GetServerDirectory() {
 }
 
 string SystemUtil::GetServerPath() {
+#ifdef OS_HAIKU
+  // allow to place server in user's non-packaged/data path
+  const string data_path = GetUserNonPackagedDataDirectory();
+  const string path = FileUtil::JoinPath(data_path, kMozcServerName);
+  if (FileUtil::FileExists(path)) {
+    return path;
+  }
+#endif
   const string server_path = GetServerDirectory();
   // if server path is empty, return empty path
   if (server_path.empty()) {
@@ -413,6 +432,14 @@ string SystemUtil::GetRendererPath() {
 }
 
 string SystemUtil::GetToolPath() {
+#ifdef OS_HAIKU
+  // allow to place tool in user's non-packaged/data path
+  const string data_path = GetUserNonPackagedDataDirectory();
+  const string path = FileUtil::JoinPath(data_path, kMozcTool);
+  if (FileUtil::FileExists(path)) {
+    return path;
+  }
+#endif
   const string server_path = GetServerDirectory();
   // if server path is empty, return empty path
   if (server_path.empty()) {
