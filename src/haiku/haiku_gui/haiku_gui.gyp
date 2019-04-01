@@ -81,7 +81,7 @@
         '../../dictionary/dictionary_base.gyp:user_dictionary',
         '../../protocol/protocol.gyp:commands_proto',
         '../../protocol/protocol.gyp:user_dictionary_storage_proto',
-        'encoding_util',
+        '../../gui/gui.gyp:encoding_util',
       ],
     },
     {
@@ -350,16 +350,6 @@
             '--inputpath', '<@(_inputs)',
           ],
         },
-      ],
-    },
-    {
-      'target_name': 'encoding_util',
-      'type': 'static_library',
-      'sources': [
-        '../../gui/base/encoding_util.cc',
-      ],
-      'dependencies': [
-        '../../base/base.gyp:base_core',
       ],
     },
   ],
